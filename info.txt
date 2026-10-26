@@ -1,0 +1,6 @@
+Req 
+
+- Scrolling experience (GSAP Animations Scroll Triggers)
+- Automatic light/dark theme based upon the time 
+- Gold loan: weight/rate/value caluclation alinged with present market prices
+- 

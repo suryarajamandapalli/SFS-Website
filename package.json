@@ -1,0 +1,18 @@
+{
+  "name": "sfs-website",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Shine Fin Services (SFS) - Premium Financial Consultancy Website",
+  "scripts": {
+    "build": "echo Static build complete",
+    "start": "node server.cjs 6000",
+    "server": "node server.cjs 6000",
+    "server:6000": "node server.cjs 6000",
+    "server:6060": "node server.cjs 6060",
+    "server:84": "node server.cjs 84"
+  },
+  "dependencies": {
+    "chart.js": "^4.6.1",
+    "gsap": "^3.12.5"
+  }
+}

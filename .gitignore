@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Vercel
+.vercel/
+
+# Temporary and scratch test files
+scratch/
+restored/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
