@@ -95,6 +95,12 @@
       }
     });
 
+    // Update sliding pill indicator position
+    const pillTranslate = mode === 'dark' ? '100%' : (mode === 'auto' ? '200%' : '0%');
+    document.querySelectorAll('.theme-sliding-pill').forEach(function (pill) {
+      pill.style.transform = 'translateX(' + pillTranslate + ')';
+    });
+
     // Update active state in dropdown menus
     document.querySelectorAll('.theme-option').forEach(function (opt) {
       const optMode = opt.getAttribute('data-set-theme');
@@ -146,7 +152,7 @@
         if (targetMode) {
           applyTheme(targetMode, true);
         }
-        closeAllThemeMenus();
+        setTimeout(closeAllThemeMenus, 260);
       });
     });
 

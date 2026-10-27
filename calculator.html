@@ -105,7 +105,7 @@
       </nav>
 
       <!-- RIGHT: Theme Switcher & Primary CTA -->
-      <div class="nav-cta-wrap" style="display: flex; align-items: center; gap: 0.85rem;">
+      <div class="nav-cta-wrap">
         
         <!-- Theme Switcher Dropdown Widget -->
         <div class="theme-switcher-wrap" id="theme-switcher">
@@ -120,67 +120,36 @@
           </button>
 
           <div class="theme-dropdown-menu" role="menu" aria-label="Theme selection menu">
-            <div class="theme-dropdown-header">Appearance</div>
-            
-            <button type="button" class="theme-option" data-set-theme="light" role="menuitem">
-              <span class="theme-option-label">
-                <span class="theme-option-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                  </svg>
-                </span>
-                <span class="theme-option-text">
-                  <span class="theme-option-title">Light</span>
-                  <span class="theme-option-desc">Always daylight theme</span>
-                </span>
-              </span>
-              <span class="theme-check-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </span>
-            </button>
-
-            <button type="button" class="theme-option" data-set-theme="dark" role="menuitem">
-              <span class="theme-option-label">
-                <span class="theme-option-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                  </svg>
-                </span>
-                <span class="theme-option-text">
-                  <span class="theme-option-title">Dark</span>
-                  <span class="theme-option-desc">Executive midnight theme</span>
-                </span>
-              </span>
-              <span class="theme-check-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </span>
-            </button>
-
-            <button type="button" class="theme-option" data-set-theme="auto" role="menuitem">
-              <span class="theme-option-label">
-                <span class="theme-option-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                </span>
-                <span class="theme-option-text">
-                  <span class="theme-option-title">Auto (Time-based)</span>
-                  <span class="theme-option-desc">6 AM–6 PM Light • 6 PM–6 AM Dark</span>
-                </span>
-              </span>
-              <span class="theme-check-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </span>
-            </button>
+            <div class="theme-sliding-toggle">
+              <span class="theme-sliding-pill" aria-hidden="true"></span>
+              <button type="button" class="theme-option" data-set-theme="light" role="menuitem" aria-label="Light theme">
+                <svg class="theme-opt-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <span>Light</span>
+              </button>
+              <button type="button" class="theme-option" data-set-theme="dark" role="menuitem" aria-label="Dark theme">
+                <svg class="theme-opt-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <span>Dark</span>
+              </button>
+              <button type="button" class="theme-option" data-set-theme="auto" role="menuitem" aria-label="Auto theme">
+                <svg class="theme-opt-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>Auto</span>
+              </button>
+            </div>
           </div>
         </div>
 
