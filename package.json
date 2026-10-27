@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Shine Fin Services (SFS) - Premium Financial Consultancy Website",
   "scripts": {
-    "build": "echo Static build complete",
+    "build": "echo Static site ready",
     "start": "node server.cjs 6000",
     "server": "node server.cjs 6000",
     "server:6000": "node server.cjs 6000",
