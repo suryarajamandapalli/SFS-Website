@@ -23,15 +23,15 @@
       '18K': 10694.00
     },
     ornamentTypes: [
-      { id: 'necklace', name: 'Necklace / Choker' },
-      { id: 'bangles', name: 'Bangles / Kadas' },
-      { id: 'chain', name: 'Gold Chain' },
-      { id: 'ring', name: 'Ring / Band' },
-      { id: 'earrings', name: 'Earrings / Jhumkas' },
+      { id: 'necklace', name: 'Necklace' },
+      { id: 'bangles', name: 'Bangles' },
+      { id: 'chain', name: 'Chain' },
+      { id: 'ring', name: 'Ring' },
+      { id: 'earrings', name: 'Earrings' },
       { id: 'bracelet', name: 'Bracelet' },
-      { id: 'coins', name: 'Gold Coins / Bars (999/916)' },
-      { id: 'pendant', name: 'Pendant / Locket' },
-      { id: 'other', name: 'Other Gold Jewellery' }
+      { id: 'coins', name: 'Coins / Bar' },
+      { id: 'pendant', name: 'Pendant' },
+      { id: 'other', name: 'Other' }
     ]
   };
 
@@ -203,7 +203,7 @@
     if (valuation.mode === 'weight') {
       if (elTotalWeight) elTotalWeight.textContent = valuation.formattedTotalWeight;
       if (elItemCount) elItemCount.textContent = valuation.itemCount > 0 ? (valuation.itemCount + (valuation.itemCount === 1 ? ' Item' : ' Items')) : '0 Items';
-      if (elRatePerGram) elRatePerGram.textContent = Engine.formatCurrency(Config.ratesPerGram['22K']) + '/g (22K Benchmark)';
+      if (elRatePerGram) elRatePerGram.textContent = Engine.formatCurrency(Config.ratesPerGram['22K']) + '/g (22K)';
     } else {
       if (elTotalWeight) elTotalWeight.textContent = valuation.formattedRequiredWeight;
       if (elItemCount) elItemCount.textContent = 'Calculated Target';
@@ -218,8 +218,8 @@
     }
     if (mode2Context) {
       mode2Context.textContent = valuation.hasData
-        ? `Required net gold at ${valuation.carat} purity under 75% LTV`
-        : 'Enter desired loan amount to calculate required gold';
+        ? `Required gold at ${valuation.carat} under 75% LTV`
+        : 'Enter loan amount to calculate required gold';
     }
 
     // 4. Chart.js Doughnut Sync
@@ -257,7 +257,7 @@
 
       row.innerHTML = `
         <div class="ledger-item-header">
-          <span class="ledger-item-index">Ornament ${String(index + 1).padStart(2, '0')}</span>
+          <span class="ledger-item-index">Ornament ${index + 1}</span>
           ${canRemove ? `
             <button type="button" class="btn-row-remove" data-remove-id="${orn.id}" aria-label="Remove ornament ${index + 1}">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -297,11 +297,11 @@
 
         <div class="ledger-row-subtotal">
           <div class="subtotal-segment">
-            <span class="subtotal-label">Gold Valuation:</span>
+            <span class="subtotal-label">Gold Value:</span>
             <span class="subtotal-val">${hasValidWeight ? Engine.formatCurrency(rowVal) : '—'}</span>
           </div>
           <div class="subtotal-segment">
-            <span class="subtotal-label">Eligible Loan (75% LTV):</span>
+            <span class="subtotal-label">Eligible Loan (75%):</span>
             <span class="subtotal-val subtotal-val-highlight">${hasValidWeight ? Engine.formatCurrency(rowLoan) : '—'}</span>
           </div>
         </div>
@@ -352,11 +352,11 @@
 
     subtotalEl.innerHTML = `
       <div class="subtotal-segment">
-        <span class="subtotal-label">Gold Valuation:</span>
+        <span class="subtotal-label">Gold Value:</span>
         <span class="subtotal-val">${hasValidWeight ? Engine.formatCurrency(rowVal) : '—'}</span>
       </div>
       <div class="subtotal-segment">
-        <span class="subtotal-label">Eligible Loan (75% LTV):</span>
+        <span class="subtotal-label">Eligible Loan (75%):</span>
         <span class="subtotal-val subtotal-val-highlight">${hasValidWeight ? Engine.formatCurrency(rowLoan) : '—'}</span>
       </div>
     `;

@@ -223,18 +223,14 @@
       <!-- 1. EDITORIAL PAGE HEADER (LEFT-ALIGNED FINANCIAL VALUATION INTRODUCTION) -->
       <div class="calc-intro-header">
         <div class="calc-intro-main">
-          <span class="calc-eyebrow">Financial Valuation Terminal</span>
           <h1 class="calc-title">Gold Loan Calculator</h1>
-          <p class="calc-subtitle">Discover the estimated value of your gold and the loan amount you may be eligible for.</p>
+          <p class="calc-subtitle">Instant gold valuation and loan eligibility estimate.</p>
         </div>
 
-        <!-- Transparent Benchmark Status Badge -->
+        <!-- Compact Rate Benchmark Pill -->
         <div class="calc-rate-badge">
-          <div class="rate-badge-top">
-            <span class="rate-badge-dot"></span>
-            <span class="rate-badge-title">Sample Benchmark Rate</span>
-          </div>
-          <div class="rate-badge-meta">22K @ &#8377;13,070/g &bull; 75% Regulatory LTV</div>
+          <span class="rate-badge-dot"></span>
+          <span class="rate-badge-meta">22K @ &#8377;13,070/g &bull; 75% LTV</span>
         </div>
       </div>
 
@@ -248,27 +244,24 @@
           <div class="terminal-mode-bar">
             <div class="mode-segmented-control" role="tablist" aria-label="Calculation Mode">
               <button type="button" class="mode-segment-btn is-active" data-mode="weight" role="tab" aria-selected="true" aria-controls="panel-weight-mode">
-                <span class="mode-segment-title">I Have Gold</span>
-                <span class="mode-segment-sub">Calculate loan from gold weight</span>
+                <span class="mode-segment-title">By Gold Weight</span>
               </button>
               <button type="button" class="mode-segment-btn" data-mode="expected_loan" role="tab" aria-selected="false" aria-controls="panel-expected-mode">
-                <span class="mode-segment-title">I Know My Loan Amount</span>
-                <span class="mode-segment-sub">Calculate required weight &amp; purity</span>
+                <span class="mode-segment-title">By Loan Amount</span>
               </button>
             </div>
 
-            <!-- Deliberate "Load Example (2g • 22K)" Action Button -->
+            <!-- Sleek Sample Action Button -->
             <button type="button" id="btn-load-example" class="btn-example-load" aria-label="Load demonstration benchmark example">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-              <span>Load Example (2g &bull; 22K)</span>
+              <span>Sample (2g &bull; 22K)</span>
             </button>
           </div>
 
           <!-- MODE 1 PANEL: WEIGHT OF ORNAMENT (JEWELLERY VALUATION LEDGER) -->
           <div id="panel-weight-mode" class="terminal-mode-panel" role="tabpanel">
             <div class="panel-section-title">
-              <h2 class="section-title-heading">Pledged Ornaments Ledger</h2>
-              <span class="section-title-sub">Net weight excludes precious stones, lac, and enamel.</span>
+              <h2 class="section-title-heading">Gold Ornaments</h2>
             </div>
 
             <!-- Dynamic Ornaments Ledger List -->
@@ -282,15 +275,14 @@
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
               </svg>
-              <span>Add Another Ornament</span>
+              <span>+ Add Ornament</span>
             </button>
           </div>
 
           <!-- MODE 2 PANEL: EXPECTED LOAN AMOUNT (TARGET FINANCING) -->
           <div id="panel-expected-mode" class="terminal-mode-panel" role="tabpanel" style="display: none;">
             <div class="panel-section-title">
-              <h2 class="section-title-heading">Target Financing Requirements</h2>
-              <span class="section-title-sub">Enter desired financing to determine required hallmarked weight.</span>
+              <h2 class="section-title-heading">Target Loan</h2>
             </div>
 
             <div class="mode2-workspace">
@@ -316,19 +308,19 @@
               <div class="terminal-field">
                 <label class="terminal-field-label" for="target-carat-select">Gold Purity / Hallmarked Standard</label>
                 <select id="target-carat-select" class="terminal-select">
-                  <option value="24K">24 Karat (99.9% Pure &bull; &#8377;14,258/g)</option>
-                  <option value="22K" selected>22 Karat (91.6% Hallmark &bull; &#8377;13,070/g &mdash; Demonstration Baseline)</option>
-                  <option value="20K">20 Karat (83.3% &bull; &#8377;11,882/g)</option>
-                  <option value="18K">18 Karat (75.0% &bull; &#8377;10,694/g)</option>
+                  <option value="24K">24 Karat (99.9%) &bull; &#8377;14,258/g</option>
+                  <option value="22K" selected>22 Karat (91.6%) &bull; &#8377;13,070/g</option>
+                  <option value="20K">20 Karat (83.3%) &bull; &#8377;11,882/g</option>
+                  <option value="18K">18 Karat (75.0%) &bull; &#8377;10,694/g</option>
                 </select>
               </div>
 
               <!-- Computed Required Weight Output -->
               <div class="mode2-computed-card">
-                <div class="mode2-computed-title">Estimated Gold Weight Required</div>
+                <div class="mode2-computed-title">Required Gold Weight</div>
                 <div class="mode2-computed-val-row">
                   <span id="mode2-required-weight-val" class="mode2-weight-hero">—</span>
-                  <span id="mode2-weight-context" class="mode2-weight-context">Enter desired loan amount to calculate required gold</span>
+                  <span id="mode2-weight-context" class="mode2-weight-context">Enter loan amount to calculate required gold</span>
                 </div>
               </div>
             </div>
@@ -347,16 +339,15 @@
               <!-- Empty State Display -->
               <div class="hero-empty-wrap" id="hero-empty-state">
                 <div class="hero-empty-headline">Enter your gold details to see your estimated loan value.</div>
-                <div class="hero-empty-desc">Net weight and hallmarked purity determine your instant appraisal under the 75% RBI regulatory loan-to-value ceiling.</div>
               </div>
 
               <!-- Active State Display -->
               <div class="hero-active-wrap" id="hero-active-state" style="display: none;">
                 <div id="summary-eligible-amount" class="hero-amount-display">—</div>
                 <div class="hero-meta-row">
-                  <span>Calculated under <strong>75% LTV</strong> regulatory ceiling</span>
+                  <span>75% LTV</span>
                   <span class="meta-bullet">&bull;</span>
-                  <span id="summary-purity-val">22K Hallmark Benchmark</span>
+                  <span id="summary-purity-val">22K Hallmark</span>
                 </div>
               </div>
             </div>
@@ -380,7 +371,7 @@
                 <div class="appraisal-ledger-row">
                   <span class="ledger-item-label">
                     <span class="dot-indicator dot-green"></span>
-                    Eligible Loan Amount (75%)
+                    Eligible Loan (75%)
                   </span>
                   <span id="summary-eligible-amount-row" class="ledger-item-value value-highlight-green">—</span>
                 </div>
@@ -388,7 +379,7 @@
                 <div class="appraisal-ledger-row">
                   <span class="ledger-item-label">
                     <span class="dot-indicator dot-amber"></span>
-                    Uncovered Gold Value (25%)
+                    Uncovered Value (25%)
                   </span>
                   <span id="summary-not-covered" class="ledger-item-value">—</span>
                 </div>
@@ -399,22 +390,22 @@
                 </div>
 
                 <div class="appraisal-ledger-row">
-                  <span class="ledger-item-label">Total Net Weight</span>
+                  <span class="ledger-item-label">Net Gold Weight</span>
                   <span id="summary-total-weight" class="ledger-item-value">—</span>
                 </div>
 
                 <div class="appraisal-ledger-row">
-                  <span class="ledger-item-label">Items Pledged</span>
+                  <span class="ledger-item-label">Ornaments</span>
                   <span id="summary-ornament-count" class="ledger-item-value">0 Items</span>
                 </div>
 
                 <div class="appraisal-ledger-row">
-                  <span class="ledger-item-label">Gold Rate Basis</span>
+                  <span class="ledger-item-label">Benchmark Rate</span>
                   <span id="summary-rate-per-gram" class="ledger-item-value">—</span>
                 </div>
 
                 <div class="appraisal-ledger-row">
-                  <span class="ledger-item-label">Regulatory LTV Ceiling</span>
+                  <span class="ledger-item-label">Regulatory LTV</span>
                   <span id="summary-ltv-percent" class="ledger-item-value">75%</span>
                 </div>
               </div>
@@ -426,14 +417,14 @@
           <!-- 3. Terminal Primary Action CTA -->
           <div class="terminal-cta-wrap">
             <a href="index.html#contact" class="btn-terminal-cta">
-              <span>Talk to Shine Fin Services</span>
+              <span>Apply for Gold Loan</span>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
             </a>
             <div class="terminal-rate-disclaimer">
-              Demonstration baseline sample rate (22K @ &#8377;13,070/g). API-ready for live IBJA synchronization.
+              *Sample benchmark rate (22K @ &#8377;13,070/g). Subject to branch purity check.
             </div>
           </div>
 
@@ -441,21 +432,9 @@
 
       </div>
 
-      <!-- 3. BELOW-TERMINAL REGULATORY & VALUATION STANDARDS -->
-      <div class="calc-guide-grid">
-        <div class="guide-panel">
-          <h3 class="guide-panel-title">Valuation &amp; Appraisal Process</h3>
-          <p class="guide-panel-text">
-            Gold jewellery value is appraised strictly on net gold content, safely excluding stones, beads, and wax. Testing is conducted using non-destructive ultrasonic and karat-meter analysis at our Coimbatore branch to verify hallmarked purity (18K, 20K, 22K, or 24K).
-          </p>
-        </div>
-
-        <div class="guide-panel">
-          <h3 class="guide-panel-title">Regulatory &amp; Lending Compliance</h3>
-          <p class="guide-panel-text">
-            Calculated values are estimates for financial planning based on the 75% loan-to-value ceiling permitted under Reserve Bank of India (RBI) directives. Final sanctioned value is determined upon physical verification, KYC documentation, and lender partner policy.
-          </p>
-        </div>
+      <!-- 3. REGULATORY NOTE -->
+      <div class="calc-regulatory-note">
+        <p>*Valuation and loan amounts are estimates based on 75% RBI regulatory LTV guidelines. Final loan sanction is subject to in-branch purity verification.</p>
       </div>
 
     </div>

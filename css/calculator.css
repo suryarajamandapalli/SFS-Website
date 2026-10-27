@@ -111,24 +111,17 @@
   margin: 0;
 }
 
-/* Rate Benchmark Badge (Transparent, API-Ready) */
+/* Rate Benchmark Badge (Compact Inline Pill) */
 .calc-rate-badge {
   display: inline-flex;
-  flex-direction: column;
-  align-items: flex-end;
-  text-align: right;
-  gap: 0.25rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
   background: var(--calc-surface);
   border: 1px solid var(--calc-border);
-  padding: 0.6rem 1rem;
-  border-radius: var(--calc-radius-sm);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-}
-
-.rate-badge-top {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .rate-badge-dot {
@@ -136,21 +129,15 @@
   height: 6px;
   border-radius: 50%;
   background-color: var(--calc-accent-amber);
-}
-
-.rate-badge-title {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--calc-text-secondary);
+  flex-shrink: 0;
 }
 
 .rate-badge-meta {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--calc-text-primary);
+  color: var(--calc-text-secondary);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 /* --------------------------------------------------------------------------
@@ -200,10 +187,10 @@
 
 .mode-segment-btn {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  padding: 0.65rem 0.95rem;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.6rem 1rem;
   border-radius: calc(var(--calc-radius-sm) - 2px);
   border: 1px solid transparent;
   background: transparent;
@@ -790,34 +777,19 @@
 }
 
 /* --------------------------------------------------------------------------
-   7. Regulatory & Valuation Guide (Below Terminal)
+   7. Regulatory Note (Clean Discreet Footnote)
    -------------------------------------------------------------------------- */
-.calc-guide-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+.calc-regulatory-note {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--calc-border-subtle);
+  text-align: center;
 }
 
-.guide-panel {
-  background: var(--calc-surface);
-  border: 1px solid var(--calc-border);
-  border-radius: var(--calc-radius-sm);
-  padding: 1.5rem 1.75rem;
-}
-
-.guide-panel-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--calc-text-primary);
-  margin: 0 0 0.5rem 0;
-}
-
-.guide-panel-text {
-  font-size: 0.82rem;
-  line-height: 1.6;
-  color: var(--calc-text-secondary);
+.calc-regulatory-note p {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--calc-text-muted);
   margin: 0;
 }
 
