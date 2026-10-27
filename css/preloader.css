@@ -28,11 +28,11 @@
 
 /* Dark Theme Preloader Tokens (Activated when data-theme="dark") */
 [data-theme="dark"] {
-  --sfs-preloader-bg: #07131A;
-  --sfs-preloader-bg-grad: radial-gradient(circle at 50% 46%, #0C2028 0%, #07131A 65%, #030A0E 100%);
+  --sfs-preloader-bg: #0A0E13;
+  --sfs-preloader-bg-grad: radial-gradient(circle at 50% 46%, #0C2028 0%, #0A0E13 65%, #030A0E 100%);
   --sfs-preloader-ambient-grad: radial-gradient(circle at 50% 48%, rgba(16, 185, 129, 0.08) 0%, rgba(7, 19, 26, 0.6) 55%, rgba(3, 10, 14, 0.95) 100%);
   --sfs-preloader-title: #F5F7F6;
-  --sfs-preloader-sub: #B8C7C2;
+  --sfs-preloader-sub: #94A3B8;
   --sfs-preloader-aura: rgba(16, 185, 129, 0.32);
   --sfs-preloader-geom: #10B981;
   --sfs-preloader-letters: #FFFFFF;

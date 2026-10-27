@@ -746,195 +746,112 @@
     const servicesSection = document.getElementById('services');
     if (!servicesSection) return;
 
-    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-    gsap.registerPlugin(ScrollTrigger);
-
-    const pinTrack = document.getElementById('services-pin-track');
-    const stagePin = document.getElementById('services-stage-pin');
-    const trainTrack = document.getElementById('services-train-track');
-    const carriages = servicesSection.querySelectorAll('.services-train-carriage');
     const domainTabs = servicesSection.querySelectorAll('.services-domain-tab');
+    const panels = servicesSection.querySelectorAll('.services-panel');
 
-    if (!pinTrack || !stagePin || !trainTrack || carriages.length === 0) return;
+    function switchService(targetKey, shouldScroll) {
+      if (!targetKey) return;
+      targetKey = targetKey.replace('#', '').toLowerCase();
 
-    // Header Entrance Reveal - stable fromTo
-    gsap.fromTo('.services-top-header-wrap',
-      { opacity: 0, y: 16 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: servicesSection,
-          start: 'top 88%',
-          once: true
+      // Update tabs
+      domainTabs.forEach(function (tab) {
+        const isMatch = tab.getAttribute('data-service-target') === targetKey;
+        tab.classList.toggle('is-active', isMatch);
+        tab.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+      });
+
+      // Update panels
+      panels.forEach(function (panel) {
+        const isMatch = panel.getAttribute('data-service') === targetKey;
+        if (isMatch) {
+          panel.removeAttribute('hidden');
+          panel.classList.add('is-active');
+          if (typeof gsap !== 'undefined') {
+            gsap.fromTo(panel, 
+              { opacity: 0, y: 12 }, 
+              { opacity: 1, y: 0, duration: 0.32, ease: 'power2.out' }
+            );
+          }
+        } else {
+          panel.classList.remove('is-active');
+          panel.setAttribute('hidden', '');
+        }
+      });
+
+      if (shouldScroll) {
+        const navH = 74;
+        const targetPos = servicesSection.getBoundingClientRect().top + window.scrollY - navH - 12;
+        if (lenis) {
+          lenis.scrollTo(targetPos, { duration: 0.9 });
+        } else {
+          window.scrollTo({ top: targetPos, behavior: 'smooth' });
         }
       }
-    );
+    }
 
-    const mm = gsap.matchMedia();
-
-    mm.add('(min-width: 992px)', function () {
-      const scrollDistance = (carriages.length - 1) * 1100;
-      const childTriggers = [];
-
-      // Initialize carriage focus state
-      carriages.forEach(function (c, idx) {
-        const grid = c.querySelector('.carriage-inner-grid');
-        if (grid) {
-          if (idx === 0) {
-            grid.style.opacity = '1';
-            grid.style.transform = 'scale(1)';
-          } else {
-            grid.style.opacity = '0.38';
-            grid.style.transform = 'scale(0.96)';
-          }
-        }
+    // Tab click listeners
+    domainTabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        const target = tab.getAttribute('data-service-target');
+        switchService(target, false);
       });
-
-      const trainTween = gsap.to(trainTrack, {
-        x: () => -(trainTrack.scrollWidth - trainTrack.parentElement.clientWidth),
-        ease: 'none',
-        scrollTrigger: {
-          id: 'editorial-services-train',
-          trigger: pinTrack,
-          start: 'top top',
-          end: '+=' + scrollDistance,
-          pin: stagePin,
-          pinSpacing: true,
-          scrub: 0.7,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          snap: {
-            snapTo: [0, 0.5, 1.0],
-            duration: { min: 0.25, max: 0.55 },
-            delay: 0.08,
-            ease: 'power2.out'
-          },
-          onUpdate: function (self) {
-            const p = self.progress;
-            const activeIdx = Math.min(carriages.length - 1, Math.max(0, Math.round(p * (carriages.length - 1))));
-            
-            // Sync domain tabs
-            domainTabs.forEach(function (tab, i) {
-              const isActive = i === activeIdx;
-              tab.classList.toggle('is-active', isActive);
-              tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
-            });
-
-            // Focus active carriage, dim inactive
-            carriages.forEach(function (c, i) {
-              const grid = c.querySelector('.carriage-inner-grid');
-              if (!grid) return;
-              if (i === activeIdx) {
-                grid.style.opacity = '1';
-                grid.style.transform = 'scale(1)';
-              } else {
-                grid.style.opacity = '0.38';
-                grid.style.transform = 'scale(0.96)';
-              }
-            });
-          }
-        }
-      });
-
-      // Domain tabs click handling
-      domainTabs.forEach(function (tab) {
-        tab.addEventListener('click', function () {
-          const carriageIdx = parseInt(tab.getAttribute('data-carriage'), 10) || 0;
-          const st = ScrollTrigger.getById('editorial-services-train');
-          if (st) {
-            const targetScroll = st.start + (st.end - st.start) * (carriageIdx / (carriages.length - 1));
-            if (lenis) {
-              lenis.scrollTo(targetScroll, { duration: 0.8 });
-            } else {
-              window.scrollTo({
-                top: targetScroll,
-                behavior: 'smooth'
-              });
-            }
-          }
-        });
-      });
-
-      carriages.forEach(function (c, idx) {
-        const headline = c.querySelector('.carriage-headline');
-        const listItems = c.querySelectorAll('.carriage-list-item');
-        const cImg = c.querySelector('.carriage-img');
-
-        // All carriage typography is rock-solid and clear with zero flickering
-        gsap.set([headline, ...listItems], { opacity: 1, y: 0, skewY: 0 });
-
-        if (cImg) {
-          const stImg = gsap.fromTo(cImg,
-            { scale: 1.04 },
-            {
-              scale: 1.0,
-              duration: 1.0,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: c,
-                containerAnimation: trainTween,
-                start: 'left 90%',
-                toggleActions: 'play none none reverse'
-              }
-            }
-          );
-          if (stImg.scrollTrigger) childTriggers.push(stImg.scrollTrigger);
-        }
-      });
-
-      // Anchor links handling (#loans, #properties, #insurance)
-      const anchorLinks = document.querySelectorAll('a[href^="#loans"], a[href^="#properties"], a[href^="#insurance"]');
-      anchorLinks.forEach(function (link) {
-        link.addEventListener('click', function (e) {
-          const hash = link.getAttribute('href');
-          const targetCarriage = servicesSection.querySelector(hash);
-          if (targetCarriage) {
-            e.preventDefault();
-            const carriageIdx = parseInt(targetCarriage.getAttribute('data-carriage'), 10) || 0;
-            const st = trainTween.scrollTrigger;
-            if (st) {
-              const targetScroll = st.start + (st.end - st.start) * (carriageIdx / (carriages.length - 1));
-              if (lenis) {
-                lenis.scrollTo(targetScroll, { duration: 1.0 });
-              } else {
-                window.scrollTo({
-                  top: targetScroll,
-                  behavior: 'smooth'
-                });
-              }
-            }
-          }
-        });
-      });
-
-      return () => {
-        childTriggers.forEach(t => t.kill());
-        if (trainTween.scrollTrigger) trainTween.scrollTrigger.kill();
-        trainTween.kill();
-      };
     });
 
-    // Mobile Anchor Links handling
-    const mobileLinks = document.querySelectorAll('.mobile-nav-link[href^="#loans"], .mobile-nav-link[href^="#properties"], .mobile-nav-link[href^="#insurance"]');
-    mobileLinks.forEach(function (link) {
+    // Anchor links handling (#loans, #properties, #insurance) from navbar & mobile drawer
+    const anchorLinks = document.querySelectorAll('a[href^="#loans"], a[href^="#properties"], a[href^="#insurance"], a[href*="#loans"], a[href*="#properties"], a[href*="#insurance"]');
+    anchorLinks.forEach(function (link) {
       link.addEventListener('click', function (e) {
-        const hash = link.getAttribute('href');
-        const mobileTarget = document.getElementById('m-' + hash.substring(1));
-        if (mobileTarget && window.innerWidth < 992) {
+        const href = link.getAttribute('href');
+        const hashMatch = href.match(/#(loans|properties|insurance)/);
+        if (hashMatch) {
           e.preventDefault();
-          const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 74;
-          const top = mobileTarget.getBoundingClientRect().top + window.scrollY - navH - 16;
-          if (lenis) {
-            lenis.scrollTo(top, { duration: 1.1 });
-          } else {
-            window.scrollTo({ top: top, behavior: 'smooth' });
-          }
+          switchService(hashMatch[1], true);
         }
       });
     });
+
+    // Handle initial hash on page load
+    if (window.location.hash) {
+      const initMatch = window.location.hash.match(/#(loans|properties|insurance)/);
+      if (initMatch) {
+        switchService(initMatch[1], false);
+      }
+    }
+
+    // Header & Section Entrance Reveal
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+
+      gsap.fromTo('.services-header-container',
+        { opacity: 0, y: 18 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.65,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: servicesSection,
+            start: 'top 85%',
+            once: true
+          }
+        }
+      );
+
+      gsap.fromTo('.services-panels-wrap',
+        { opacity: 0, y: 22 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.services-panels-wrap',
+            start: 'top 88%',
+            once: true
+          }
+        }
+      );
+    }
   }
 
   // --- 12. Final CTA Section (Masked Curtain Reveal & Photographic Depth) ---
