@@ -83,13 +83,12 @@
   <header id="sfs-navbar" class="sfs-navbar" role="banner">
     <div class="nav-container">
       
-      <!-- LEFT: Brand Logo & Wordmark -->
-      <a href="index.html" class="nav-brand-lockup" aria-label="Shine Fin Services Home">
-        <img src="SFS Official Logo.svg" alt="Shine Fin Services Emblem" class="nav-brand-logo" width="40" height="40">
-        <div class="nav-brand-text">
-          <span class="nav-brand-name">SHINE FIN SERVICES</span>
-          <span class="nav-brand-tagline">FINANCIAL EXCELLENCE</span>
+      <!-- LEFT: Official SFS Logo + Brand Text -->
+      <a href="index.html#home" class="nav-brand" aria-label="Shine Fin Services Home">
+        <div class="nav-logo-wrap">
+          <img src="SFS Official Logo.svg" alt="Shine Fin Services Official Logo" width="42" height="42">
         </div>
+        <span class="nav-brand-name">SHINE FIN SERVICES</span>
       </a>
 
       <!-- CENTER: Navigation Menu Links -->
@@ -99,13 +98,13 @@
           <li><a href="index.html#loans" class="nav-link">Loans</a></li>
           <li><a href="index.html#properties" class="nav-link">Properties</a></li>
           <li><a href="index.html#insurance" class="nav-link">Insurance &amp; Investments</a></li>
-          <li><a href="calculator.html" class="nav-link is-active" aria-current="page">Gold Loan Calculator</a></li>
+          <li><a href="calculator.html" class="nav-link">Gold Loan Calculator</a></li>
           <li><a href="index.html#about" class="nav-link">About</a></li>
         </ul>
       </nav>
 
       <!-- RIGHT: Theme Switcher & Primary CTA -->
-      <div class="nav-cta-wrap">
+      <div class="nav-cta-wrap" style="display: flex; align-items: center; gap: 0.85rem;">
         
         <!-- Theme Switcher Dropdown Widget -->
         <div class="theme-switcher-wrap" id="theme-switcher">
@@ -139,7 +138,7 @@
                 </span>
                 <span class="theme-option-text">
                   <span class="theme-option-title">Light</span>
-                  <span class="theme-option-desc">Daylight theme</span>
+                  <span class="theme-option-desc">Always daylight theme</span>
                 </span>
               </span>
               <span class="theme-check-icon">
@@ -156,7 +155,7 @@
                 </span>
                 <span class="theme-option-text">
                   <span class="theme-option-title">Dark</span>
-                  <span class="theme-option-desc">Executive midnight</span>
+                  <span class="theme-option-desc">Executive midnight theme</span>
                 </span>
               </span>
               <span class="theme-check-icon">
@@ -173,8 +172,8 @@
                   </svg>
                 </span>
                 <span class="theme-option-text">
-                  <span class="theme-option-title">Auto</span>
-                  <span class="theme-option-desc">Time-based switching</span>
+                  <span class="theme-option-title">Auto (Time-based)</span>
+                  <span class="theme-option-desc">6 AM–6 PM Light • 6 PM–6 AM Dark</span>
                 </span>
               </span>
               <span class="theme-check-icon">
@@ -187,8 +186,8 @@
         <a href="index.html#contact" class="btn-nav-cta">Contact Us</a>
       </div>
 
-      <!-- MOBILE TOGGLE -->
-      <button id="mobile-toggle" class="nav-mobile-toggle" type="button" aria-label="Toggle Navigation Menu" aria-expanded="false">
+      <!-- MOBILE: Minimal Hamburger Menu Toggle Button -->
+      <button id="mobile-toggle" class="nav-mobile-toggle" type="button" aria-label="Toggle Navigation Menu" aria-expanded="false" aria-controls="mobile-drawer">
         <span></span>
         <span></span>
       </button>
@@ -196,14 +195,16 @@
     </div>
   </header>
 
-  <!-- MOBILE MENU DRAWER -->
+  <!-- ======================================================================
+       MOBILE MENU DRAWER (FULLSCREEN GSAP ANIMATED)
+       ====================================================================== -->
   <div id="mobile-drawer" class="mobile-menu-drawer" role="dialog" aria-modal="true" aria-label="Mobile Navigation Menu">
     <ul class="mobile-nav-links">
       <li><a href="index.html#home" class="mobile-nav-link">Home</a></li>
       <li><a href="index.html#loans" class="mobile-nav-link">Loans</a></li>
       <li><a href="index.html#properties" class="mobile-nav-link">Properties</a></li>
       <li><a href="index.html#insurance" class="mobile-nav-link">Insurance &amp; Investments</a></li>
-      <li><a href="calculator.html" class="mobile-nav-link" style="color: var(--sfs-green);">Gold Loan Calculator</a></li>
+      <li><a href="calculator.html" class="mobile-nav-link">Gold Loan Calculator</a></li>
       <li><a href="index.html#about" class="mobile-nav-link">About</a></li>
     </ul>
 
