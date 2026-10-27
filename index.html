@@ -876,13 +876,31 @@
         <!-- Top Section Header (Pinned above the train carriages) -->
         <div class="services-top-header-wrap">
           <div class="services-header-container">
-            <header class="services-header-block">
-              <span class="services-eyebrow">OUR SERVICES</span>
-              <h2 class="services-title">
-                <span class="services-title-line1">Financial solutions,</span>
-                <span class="services-title-line2">all under one roof.</span>
-              </h2>
-            </header>
+            <div class="services-header-row">
+              <header class="services-header-block">
+                <span class="services-eyebrow">OUR SERVICES</span>
+                <h2 class="services-title">
+                  <span class="services-title-line1">Financial solutions,</span>
+                  <span class="services-title-line2">all under one roof.</span>
+                </h2>
+              </header>
+
+              <!-- Interactive 3-Domain Switcher Navigation -->
+              <nav class="services-domain-nav" role="tablist" aria-label="Services domains">
+                <button type="button" class="services-domain-tab is-active" data-carriage="0" role="tab" aria-selected="true">
+                  <span class="tab-idx">01</span>
+                  <span class="tab-name">Loans &amp; Finance</span>
+                </button>
+                <button type="button" class="services-domain-tab" data-carriage="1" role="tab" aria-selected="false">
+                  <span class="tab-idx">02</span>
+                  <span class="tab-name">Property Portfolio</span>
+                </button>
+                <button type="button" class="services-domain-tab" data-carriage="2" role="tab" aria-selected="false">
+                  <span class="tab-idx">03</span>
+                  <span class="tab-name">Insurance &amp; Wealth</span>
+                </button>
+              </nav>
+            </div>
           </div>
         </div>
 

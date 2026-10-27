@@ -753,6 +753,7 @@
     const stagePin = document.getElementById('services-stage-pin');
     const trainTrack = document.getElementById('services-train-track');
     const carriages = servicesSection.querySelectorAll('.services-train-carriage');
+    const domainTabs = servicesSection.querySelectorAll('.services-domain-tab');
 
     if (!pinTrack || !stagePin || !trainTrack || carriages.length === 0) return;
 
@@ -775,8 +776,22 @@
     const mm = gsap.matchMedia();
 
     mm.add('(min-width: 992px)', function () {
-      const scrollDistance = (carriages.length - 1) * 1200;
+      const scrollDistance = (carriages.length - 1) * 1100;
       const childTriggers = [];
+
+      // Initialize carriage focus state
+      carriages.forEach(function (c, idx) {
+        const grid = c.querySelector('.carriage-inner-grid');
+        if (grid) {
+          if (idx === 0) {
+            grid.style.opacity = '1';
+            grid.style.transform = 'scale(1)';
+          } else {
+            grid.style.opacity = '0.38';
+            grid.style.transform = 'scale(0.96)';
+          }
+        }
+      });
 
       const trainTween = gsap.to(trainTrack, {
         x: () => -(trainTrack.scrollWidth - trainTrack.parentElement.clientWidth),
@@ -788,10 +803,59 @@
           end: '+=' + scrollDistance,
           pin: stagePin,
           pinSpacing: true,
-          scrub: 1,
+          scrub: 0.7,
           anticipatePin: 1,
-          invalidateOnRefresh: true
+          invalidateOnRefresh: true,
+          snap: {
+            snapTo: [0, 0.5, 1.0],
+            duration: { min: 0.25, max: 0.55 },
+            delay: 0.08,
+            ease: 'power2.out'
+          },
+          onUpdate: function (self) {
+            const p = self.progress;
+            const activeIdx = Math.min(carriages.length - 1, Math.max(0, Math.round(p * (carriages.length - 1))));
+            
+            // Sync domain tabs
+            domainTabs.forEach(function (tab, i) {
+              const isActive = i === activeIdx;
+              tab.classList.toggle('is-active', isActive);
+              tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+
+            // Focus active carriage, dim inactive
+            carriages.forEach(function (c, i) {
+              const grid = c.querySelector('.carriage-inner-grid');
+              if (!grid) return;
+              if (i === activeIdx) {
+                grid.style.opacity = '1';
+                grid.style.transform = 'scale(1)';
+              } else {
+                grid.style.opacity = '0.38';
+                grid.style.transform = 'scale(0.96)';
+              }
+            });
+          }
         }
+      });
+
+      // Domain tabs click handling
+      domainTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          const carriageIdx = parseInt(tab.getAttribute('data-carriage'), 10) || 0;
+          const st = ScrollTrigger.getById('editorial-services-train');
+          if (st) {
+            const targetScroll = st.start + (st.end - st.start) * (carriageIdx / (carriages.length - 1));
+            if (lenis) {
+              lenis.scrollTo(targetScroll, { duration: 0.8 });
+            } else {
+              window.scrollTo({
+                top: targetScroll,
+                behavior: 'smooth'
+              });
+            }
+          }
+        });
       });
 
       carriages.forEach(function (c, idx) {
@@ -834,7 +898,7 @@
             if (st) {
               const targetScroll = st.start + (st.end - st.start) * (carriageIdx / (carriages.length - 1));
               if (lenis) {
-                lenis.scrollTo(targetScroll, { duration: 1.2 });
+                lenis.scrollTo(targetScroll, { duration: 1.0 });
               } else {
                 window.scrollTo({
                   top: targetScroll,
