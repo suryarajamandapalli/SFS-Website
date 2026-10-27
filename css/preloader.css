@@ -1,25 +1,44 @@
 /* ==========================================================================
-   SFS CINEMATIC PRELOADER (PHASE 1.1)
+   SFS CINEMATIC PRELOADER
    Brand: Shine Fin Services
-   Official SFS Green: #006B32
-   Aesthetic: USA-Level Private Banking Brand Opening,
+   Official SFS Green: #006B32 | Accent: #10B981
+   Aesthetic: Private Banking Brand Opening, Clean Canvas,
               Optical Focus Convergence, Luminous Emerald Ambient Aura,
               Masked Typography Reveal, and Theater Curtain Transition.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. Design Tokens & Global Root
+   1. Design Tokens & Theme Colors
    -------------------------------------------------------------------------- */
 :root {
   --sfs-green: #006B32;
   --sfs-green-dark: #005427;
   --sfs-green-glow: rgba(0, 107, 50, 0.22);
   --sfs-green-glow-outer: rgba(0, 107, 50, 0.03);
-  --sfs-bg-base: #FAF9F6;
-  --sfs-text-heading: #0A1E13;
-  --sfs-text-sub: #3B5346;
   --sfs-font-primary: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --sfs-z-preloader: 99999;
+
+  /* Theme-aware preloader colors (Default Light) */
+  --sfs-preloader-bg: #FAF9F6;
+  --sfs-preloader-bg-grad: radial-gradient(circle at 50% 46%, #FFFFFF 0%, #FAF9F6 60%, #EFECE5 100%);
+  --sfs-preloader-ambient-grad: radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.95) 0%, rgba(250, 249, 246, 0.75) 55%, rgba(235, 233, 226, 0.35) 100%);
+  --sfs-preloader-title: #0A1E13;
+  --sfs-preloader-sub: #3B5346;
+  --sfs-preloader-aura: rgba(0, 107, 50, 0.22);
+  --sfs-preloader-geom: #006B32;
+  --sfs-preloader-letters: #006B32;
+}
+
+/* Dark Theme Preloader Tokens (Instant sync with [data-theme="dark"]) */
+[data-theme="dark"] {
+  --sfs-preloader-bg: #07131A;
+  --sfs-preloader-bg-grad: radial-gradient(circle at 50% 46%, #0C2028 0%, #07131A 65%, #030A0E 100%);
+  --sfs-preloader-ambient-grad: radial-gradient(circle at 50% 48%, rgba(16, 185, 129, 0.08) 0%, rgba(7, 19, 26, 0.6) 55%, rgba(3, 10, 14, 0.95) 100%);
+  --sfs-preloader-title: #F5F7F6;
+  --sfs-preloader-sub: #B8C7C2;
+  --sfs-preloader-aura: rgba(16, 185, 129, 0.32);
+  --sfs-preloader-geom: #10B981;
+  --sfs-preloader-letters: #FFFFFF;
 }
 
 /* Scroll Lock while preloader is active */
@@ -46,8 +65,8 @@ body.preload-active {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--sfs-bg-base);
-  background: radial-gradient(circle at 50% 46%, #FFFFFF 0%, #FAF9F6 60%, #EFECE5 100%);
+  background-color: var(--sfs-preloader-bg);
+  background: var(--sfs-preloader-bg-grad);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
   overflow: hidden;
@@ -57,15 +76,19 @@ body.preload-active {
   will-change: transform;
 }
 
-/* Subtle architectural ambient layer with soft emerald diffusion */
+/* Architectural ambient layer with soft diffusion */
 .sfs-preloader-ambient {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.95) 0%, rgba(250, 249, 246, 0.75) 55%, rgba(235, 233, 226, 0.35) 100%);
+  background: var(--sfs-preloader-ambient-grad);
   pointer-events: none;
 }
 
-/* Center Cinematic Presentation Stage */
+/* --------------------------------------------------------------------------
+   3. Center Stage — INITIAL HIDDEN STATE (Zero FOUC)
+   The screen starts completely clean (white or dark according to theme).
+   Elements only become visible when animated by GSAP.
+   -------------------------------------------------------------------------- */
 .sfs-preloader-stage {
   position: relative;
   z-index: 2;
@@ -76,12 +99,17 @@ body.preload-active {
   text-align: center;
   padding: clamp(1.2rem, 3vh, 2.5rem) clamp(1.2rem, 4vw, 2.5rem);
   max-width: 92vw;
+  opacity: 0;
+  visibility: hidden;
   will-change: transform, opacity, filter;
 }
 
-/* --------------------------------------------------------------------------
-   3. SFS Official Emblem Wrap & Ambient Light Treatment
-   -------------------------------------------------------------------------- */
+.sfs-preloader-stage.sfs-stage-ready {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Emblem Wrap & Light Treatment */
 .sfs-emblem-wrap {
   position: relative;
   width: clamp(140px, 17vw, 240px);
@@ -100,7 +128,7 @@ body.preload-active {
   width: clamp(220px, 26vw, 360px);
   height: clamp(220px, 26vw, 360px);
   transform: translate(-50%, -50%) scale(0.8);
-  background: radial-gradient(circle, var(--sfs-green-glow) 0%, var(--sfs-green-glow-outer) 55%, transparent 72%);
+  background: radial-gradient(circle, var(--sfs-preloader-aura) 0%, rgba(0, 107, 50, 0.03) 55%, transparent 72%);
   filter: blur(44px);
   border-radius: 50%;
   pointer-events: none;
@@ -117,26 +145,33 @@ body.preload-active {
   height: 100%;
   display: block;
   overflow: visible;
+  opacity: 0;
   filter: drop-shadow(0 10px 28px rgba(0, 107, 50, 0.12));
 }
 
-/* SVG Path Components */
+[data-theme="dark"] .sfs-logo {
+  filter: drop-shadow(0 10px 28px rgba(16, 185, 129, 0.20));
+}
+
+/* SVG Path Components — Initially Hidden */
 .sfs-geom-path {
-  fill: var(--sfs-green);
+  fill: var(--sfs-preloader-geom);
   transform-box: fill-box;
   transform-origin: center center;
+  opacity: 0;
   will-change: transform, opacity, filter;
 }
 
 .sfs-letter-path {
-  fill: var(--sfs-green);
+  fill: var(--sfs-preloader-letters);
   transform-box: fill-box;
   transform-origin: center center;
+  opacity: 0;
   will-change: transform, opacity, filter;
 }
 
 /* --------------------------------------------------------------------------
-   4. High-Trust Financial Typography Lockup
+   4. High-Trust Financial Typography Lockup — Initially Hidden
    -------------------------------------------------------------------------- */
 .sfs-text-wrap {
   display: flex;
@@ -159,11 +194,13 @@ body.preload-active {
   font-size: clamp(1.4rem, 2.7vw, 2.5rem);
   font-weight: 800;
   letter-spacing: 0.18em;
-  color: var(--sfs-text-heading);
+  color: var(--sfs-preloader-title);
   text-transform: uppercase;
   line-height: 1.15;
   white-space: nowrap;
   display: block;
+  opacity: 0;
+  transform: translateY(115%);
   will-change: transform, opacity, filter, letter-spacing;
 }
 
@@ -178,11 +215,13 @@ body.preload-active {
   font-size: clamp(0.72rem, 1.15vw, 1.12rem);
   font-weight: 600;
   letter-spacing: 0.30em;
-  color: var(--sfs-text-sub);
+  color: var(--sfs-preloader-sub);
   text-transform: uppercase;
   line-height: 1.35;
   white-space: nowrap;
   display: block;
+  opacity: 0;
+  transform: translateY(115%);
   will-change: transform, opacity, filter, letter-spacing;
 }
 
@@ -260,13 +299,19 @@ body.preload-active {
    6. Accessibility (prefers-reduced-motion)
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
+  .sfs-preloader-stage {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .sfs-logo,
   .sfs-geom-path,
   .sfs-letter-path,
-  .sfs-emblem-aura,
   .sfs-brand-title,
-  .sfs-brand-tagline,
-  .sfs-preloader-stage,
-  .sfs-preloader {
+  .sfs-brand-tagline {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
     transition: none !important;
     animation: none !important;
     filter: none !important;

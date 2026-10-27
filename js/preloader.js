@@ -111,8 +111,11 @@
     }
 
     // Prepare clean slate
+    if (stageEl) {
+      stageEl.classList.add('sfs-stage-ready');
+      gsap.set(stageEl, { opacity: 1, visibility: 'visible', y: 0, filter: 'blur(0px)' });
+    }
     gsap.set(preloaderEl, { display: 'flex', opacity: 1, yPercent: 0 });
-    gsap.set(stageEl, { opacity: 1, y: 0, filter: 'blur(0px)' });
     gsap.set(auraEl, { opacity: 0, scale: 0.75 });
 
     const mm = gsap.matchMedia();
@@ -397,8 +400,11 @@
 
   // --- 7. Reduced Motion Alternative Sequence ---
   function runReducedMotionSequence() {
+    if (stageEl) {
+      stageEl.classList.add('sfs-stage-ready');
+    }
     gsap.set(preloaderEl, { display: 'flex', opacity: 1, yPercent: 0 });
-    gsap.set(stageEl, { opacity: 0, y: 0, filter: 'none' });
+    gsap.set(stageEl, { opacity: 0, visibility: 'visible', y: 0, filter: 'none' });
     gsap.set([logoSvg, geomTop, geomBottom, geomLeft, letterPaths, titleEl, taglineEl], {
       opacity: 1,
       scale: 1,
@@ -423,6 +429,11 @@
 
   // --- 8. Fallback Sequence (If GSAP is unavailable) ---
   function runFallbackSequence() {
+    if (stageEl) {
+      stageEl.classList.add('sfs-stage-ready');
+      stageEl.style.opacity = '1';
+      stageEl.style.visibility = 'visible';
+    }
     preloaderEl.style.display = 'flex';
     preloaderEl.style.opacity = '1';
 
