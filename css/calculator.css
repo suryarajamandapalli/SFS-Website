@@ -1,0 +1,899 @@
+/* ==========================================================================
+   SHINE FIN SERVICES — GOLD LOAN CALCULATOR (CF2 PREMIUM FINANCIAL REBUILD)
+   Aesthetic: Financial Terminal × Jewellery Valuation × Premium Editorial
+   Tokens: SFS Green #006B32 | Dark Navy #07131A | Editorial Surfaces
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Theme Variables & Structural Layout Tokens
+   -------------------------------------------------------------------------- */
+:root {
+  --calc-bg: #FAF9F6;
+  --calc-surface: #FFFFFF;
+  --calc-surface-subtle: #F6F5F1;
+  --calc-surface-inset: #F0EFEA;
+  --calc-border: #E2E8F0;
+  --calc-border-focus: #006B32;
+  --calc-border-subtle: #EAE8E2;
+  --calc-text-primary: #0A1E13;
+  --calc-text-secondary: #4A5B52;
+  --calc-text-muted: #718278;
+  --calc-accent-green: #006B32;
+  --calc-accent-green-bg: #EBF7EE;
+  --calc-accent-amber: #D97706;
+  --calc-accent-amber-bg: #FEF3C7;
+  --calc-radius: 10px;
+  --calc-radius-sm: 6px;
+  --calc-font: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --calc-shadow: 0 4px 20px -2px rgba(10, 30, 19, 0.05);
+}
+
+[data-theme="dark"] {
+  --calc-bg: #07131A;
+  --calc-surface: #10262D;
+  --calc-surface-subtle: #0B1B22;
+  --calc-surface-inset: #08161D;
+  --calc-border: rgba(184, 199, 194, 0.16);
+  --calc-border-focus: #10B981;
+  --calc-border-subtle: rgba(184, 199, 194, 0.10);
+  --calc-text-primary: #F5F7F6;
+  --calc-text-secondary: #B8C7C2;
+  --calc-text-muted: #859891;
+  --calc-accent-green: #10B981;
+  --calc-accent-green-bg: rgba(16, 185, 129, 0.12);
+  --calc-accent-amber: #F59E0B;
+  --calc-accent-amber-bg: rgba(245, 158, 11, 0.12);
+  --calc-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* Page Scaffolding */
+.calc-page {
+  min-height: 100vh;
+  background-color: var(--calc-bg);
+  padding-top: calc(var(--nav-height, 74px) + 2rem);
+  padding-bottom: 5rem;
+  box-sizing: border-box;
+  font-family: var(--calc-font);
+}
+
+.calc-container {
+  width: 100%;
+  max-width: var(--sfs-container-max, 1240px);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   2. Editorial Page Header & Benchmark Status
+   -------------------------------------------------------------------------- */
+.calc-intro-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--calc-border-subtle);
+  flex-wrap: wrap;
+}
+
+.calc-intro-main {
+  max-width: 680px;
+}
+
+.calc-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--calc-accent-green);
+  margin-bottom: 0.5rem;
+}
+
+.calc-title {
+  font-family: var(--calc-font);
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--calc-text-primary);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.025em;
+}
+
+.calc-subtitle {
+  font-size: clamp(0.92rem, 1.1vw, 1.05rem);
+  line-height: 1.5;
+  color: var(--calc-text-secondary);
+  margin: 0;
+}
+
+/* Rate Benchmark Badge (Transparent, API-Ready) */
+.calc-rate-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 0.25rem;
+  background: var(--calc-surface);
+  border: 1px solid var(--calc-border);
+  padding: 0.6rem 1rem;
+  border-radius: var(--calc-radius-sm);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.rate-badge-top {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.rate-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--calc-accent-amber);
+}
+
+.rate-badge-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--calc-text-secondary);
+}
+
+.rate-badge-meta {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--calc-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   3. The Valuation Terminal (Two-Column Workspace)
+   -------------------------------------------------------------------------- */
+.valuation-terminal {
+  display: grid;
+  grid-template-columns: 1.28fr 1fr;
+  background: var(--calc-surface);
+  border: 1px solid var(--calc-border);
+  border-radius: var(--calc-radius);
+  box-shadow: var(--calc-shadow);
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+}
+
+/* Left Column: Input Workspace */
+.terminal-col-input {
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  border-right: 1px solid var(--calc-border);
+  box-sizing: border-box;
+}
+
+/* Mode Selector Bar (Architectural Segmented Control) */
+.terminal-mode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.mode-segmented-control {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--calc-surface-subtle);
+  border: 1px solid var(--calc-border);
+  border-radius: var(--calc-radius-sm);
+  padding: 3px;
+  gap: 3px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.mode-segment-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 0.65rem 0.95rem;
+  border-radius: calc(var(--calc-radius-sm) - 2px);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--calc-text-secondary);
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mode-segment-btn:hover {
+  color: var(--calc-text-primary);
+}
+
+.mode-segment-btn.is-active {
+  background: var(--calc-surface);
+  color: var(--calc-text-primary);
+  border-color: var(--calc-border);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.mode-segment-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  display: block;
+}
+
+.mode-segment-btn.is-active .mode-segment-title {
+  color: var(--calc-accent-green);
+}
+
+.mode-segment-sub {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--calc-text-muted);
+  margin-top: 0.15rem;
+}
+
+/* "Load Example" Discrete Action Button */
+.btn-example-load {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.55rem 0.9rem;
+  border-radius: var(--calc-radius-sm);
+  background: var(--calc-surface-subtle);
+  border: 1px solid var(--calc-border);
+  color: var(--calc-text-secondary);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.btn-example-load:hover {
+  background: var(--calc-surface-inset);
+  color: var(--calc-accent-green);
+  border-color: var(--calc-accent-green);
+}
+
+/* --------------------------------------------------------------------------
+   4. Mode 1: Jewellery Valuation Ledger
+   -------------------------------------------------------------------------- */
+.panel-section-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.15rem;
+}
+
+.section-title-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--calc-text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.section-title-sub {
+  font-size: 0.78rem;
+  color: var(--calc-text-muted);
+}
+
+/* Ornaments Ledger Rows */
+.ornament-ledger-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ornament-ledger-item {
+  background: var(--calc-surface-subtle);
+  border: 1px solid var(--calc-border);
+  border-radius: var(--calc-radius-sm);
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: border-color 0.18s ease;
+}
+
+.ornament-ledger-item:hover {
+  border-color: var(--calc-border-focus);
+}
+
+.ledger-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ledger-item-index {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--calc-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.btn-row-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #DC2626;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.btn-row-remove:hover {
+  background: rgba(220, 38, 38, 0.10);
+}
+
+/* 3-Column Field Grid */
+.ledger-fields-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.95fr 1.15fr;
+  gap: 0.75rem;
+}
+
+.terminal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.terminal-field-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--calc-text-secondary);
+}
+
+.terminal-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.terminal-input,
+.terminal-select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--calc-text-primary);
+  background: var(--calc-surface);
+  border: 1px solid var(--calc-border);
+  border-radius: var(--calc-radius-sm);
+  padding: 0.6rem 0.75rem;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.terminal-input:focus,
+.terminal-select:focus {
+  outline: none;
+  border-color: var(--calc-border-focus);
+  box-shadow: 0 0 0 3px var(--calc-accent-green-bg);
+}
+
+.input-suffix-g {
+  position: absolute;
+  right: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--calc-text-muted);
+  pointer-events: none;
+}
+
+.terminal-input-with-suffix {
+  padding-right: 2rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.input-prefix-rupee {
+  position: absolute;
+  left: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--calc-accent-green);
+  pointer-events: none;
+}
+
+.terminal-input-with-prefix {
+  padding-left: 1.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* In-Row Appraisal Subtotal */
+.ledger-row-subtotal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--calc-border-subtle);
+  font-size: 0.78rem;
+  color: var(--calc-text-secondary);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.subtotal-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.subtotal-label {
+  color: var(--calc-text-muted);
+}
+
+.subtotal-val {
+  font-weight: 700;
+  color: var(--calc-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.subtotal-val-highlight {
+  color: var(--calc-accent-green);
+  font-weight: 700;
+}
+
+/* Add Ornament Action */
+.btn-ledger-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--calc-surface-subtle);
+  border: 1px dashed var(--calc-border);
+  color: var(--calc-accent-green);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--calc-radius-sm);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  margin-top: 0.5rem;
+}
+
+.btn-ledger-add:hover {
+  background: var(--calc-accent-green-bg);
+  border-color: var(--calc-accent-green);
+  color: var(--calc-accent-green);
+}
+
+/* --------------------------------------------------------------------------
+   5. Mode 2: Expected Loan Target Workspace
+   -------------------------------------------------------------------------- */
+.mode2-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.preset-chip-group {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.preset-chip {
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  background: var(--calc-surface-subtle);
+  border: 1px solid var(--calc-border);
+  color: var(--calc-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-chip:hover {
+  border-color: var(--calc-accent-green);
+  color: var(--calc-accent-green);
+}
+
+.preset-chip.is-active {
+  background: var(--calc-accent-green);
+  color: #FFFFFF;
+  border-color: var(--calc-accent-green);
+}
+
+.mode2-computed-card {
+  background: var(--calc-accent-green-bg);
+  border: 1px solid var(--calc-border);
+  border-left: 4px solid var(--calc-accent-green);
+  border-radius: var(--calc-radius-sm);
+  padding: 1.15rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.mode2-computed-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--calc-accent-green);
+}
+
+.mode2-computed-val-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.mode2-weight-hero {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--calc-text-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.mode2-weight-context {
+  font-size: 0.78rem;
+  color: var(--calc-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   6. Right Column: Valuation Certificate & Breakdown
+   -------------------------------------------------------------------------- */
+.terminal-col-summary {
+  background: var(--calc-surface-subtle);
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.summary-content-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 1. Primary Focal Hero: Eligible Loan */
+.valuation-hero-board {
+  background: var(--calc-surface);
+  border: 1px solid var(--calc-border);
+  border-radius: var(--calc-radius-sm);
+  padding: 1.5rem 1.65rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.hero-label-tag {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--calc-accent-green);
+  margin-bottom: 0.4rem;
+}
+
+/* Empty State Message */
+.hero-empty-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.hero-empty-headline {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--calc-text-primary);
+  line-height: 1.35;
+}
+
+.hero-empty-desc {
+  font-size: 0.8rem;
+  color: var(--calc-text-secondary);
+  line-height: 1.5;
+}
+
+/* Active State Content */
+.hero-active-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.hero-amount-display {
+  font-family: var(--calc-font);
+  font-size: clamp(2.3rem, 3.2vw, 3rem);
+  font-weight: 800;
+  color: var(--calc-accent-green);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: var(--calc-text-secondary);
+  flex-wrap: wrap;
+}
+
+.meta-bullet {
+  color: var(--calc-text-muted);
+}
+
+/* 2. Visual Appraisal: Doughnut & Breakdown Side-by-Side */
+.valuation-breakdown-row {
+  display: grid;
+  grid-template-columns: 135px 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.25rem 0;
+}
+
+.doughnut-visual-box {
+  width: 135px;
+  height: 135px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.doughnut-canvas-wrap {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.doughnut-center-readout {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  text-align: center;
+}
+
+.center-readout-sub {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--calc-text-muted);
+}
+
+.center-readout-val {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--calc-text-primary);
+  font-variant-numeric: tabular-nums;
+  margin-top: 0.1rem;
+}
+
+/* Structured Financial Ledger */
+.appraisal-ledger-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.appraisal-ledger-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--calc-border-subtle);
+}
+
+.appraisal-ledger-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ledger-item-label {
+  color: var(--calc-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.dot-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.dot-green { background-color: var(--calc-accent-green); }
+.dot-amber { background-color: var(--calc-accent-amber); }
+
+.ledger-item-value {
+  font-weight: 700;
+  color: var(--calc-text-primary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.value-highlight-green {
+  color: var(--calc-accent-green);
+  font-weight: 800;
+}
+
+/* 3. Terminal Primary Action CTA */
+.terminal-cta-wrap {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btn-terminal-cta {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  background: var(--calc-accent-green);
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.9rem 1.5rem;
+  border-radius: var(--calc-radius-sm);
+  border: none;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0, 107, 50, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.btn-terminal-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(0, 107, 50, 0.35);
+  color: #FFFFFF;
+}
+
+.terminal-rate-disclaimer {
+  font-size: 0.72rem;
+  color: var(--calc-text-muted);
+  line-height: 1.45;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   7. Regulatory & Valuation Guide (Below Terminal)
+   -------------------------------------------------------------------------- */
+.calc-guide-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.guide-panel {
+  background: var(--calc-surface);
+  border: 1px solid var(--calc-border);
+  border-radius: var(--calc-radius-sm);
+  padding: 1.5rem 1.75rem;
+}
+
+.guide-panel-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--calc-text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.guide-panel-text {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--calc-text-secondary);
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   8. Responsive Viewport Adaptations
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .valuation-terminal {
+    grid-template-columns: 1fr;
+  }
+
+  .terminal-col-input {
+    border-right: none;
+    border-bottom: 1px solid var(--calc-border);
+  }
+
+  .valuation-breakdown-row {
+    grid-template-columns: 140px 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .calc-page {
+    padding-top: calc(var(--nav-height, 74px) + 1.25rem);
+    padding-bottom: 3.5rem;
+  }
+
+  .calc-intro-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .calc-rate-badge {
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .terminal-col-input,
+  .terminal-col-summary {
+    padding: 1.35rem 1.15rem;
+  }
+
+  .terminal-mode-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mode-segmented-control {
+    min-width: 100%;
+  }
+
+  .ledger-fields-grid {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .valuation-breakdown-row {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 1.25rem;
+  }
+
+  .appraisal-ledger-table {
+    width: 100%;
+  }
+
+  .calc-guide-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .hero-amount-display {
+    font-size: 2.25rem;
+  }
+}
