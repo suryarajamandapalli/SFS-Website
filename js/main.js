@@ -746,57 +746,6 @@
     const servicesSection = document.getElementById('services');
     if (!servicesSection) return;
 
-    const domainTabs = servicesSection.querySelectorAll('.services-domain-tab');
-    const panels = servicesSection.querySelectorAll('.services-panel');
-
-    function switchService(targetKey, shouldScroll) {
-      if (!targetKey) return;
-      targetKey = targetKey.replace('#', '').toLowerCase();
-
-      // Update tabs
-      domainTabs.forEach(function (tab) {
-        const isMatch = tab.getAttribute('data-service-target') === targetKey;
-        tab.classList.toggle('is-active', isMatch);
-        tab.setAttribute('aria-selected', isMatch ? 'true' : 'false');
-      });
-
-      // Update panels
-      panels.forEach(function (panel) {
-        const isMatch = panel.getAttribute('data-service') === targetKey;
-        if (isMatch) {
-          panel.removeAttribute('hidden');
-          panel.classList.add('is-active');
-          if (typeof gsap !== 'undefined') {
-            gsap.fromTo(panel, 
-              { opacity: 0, y: 12 }, 
-              { opacity: 1, y: 0, duration: 0.32, ease: 'power2.out' }
-            );
-          }
-        } else {
-          panel.classList.remove('is-active');
-          panel.setAttribute('hidden', '');
-        }
-      });
-
-      if (shouldScroll) {
-        const navH = 74;
-        const targetPos = servicesSection.getBoundingClientRect().top + window.scrollY - navH - 12;
-        if (lenis) {
-          lenis.scrollTo(targetPos, { duration: 0.9 });
-        } else {
-          window.scrollTo({ top: targetPos, behavior: 'smooth' });
-        }
-      }
-    }
-
-    // Tab click listeners
-    domainTabs.forEach(function (tab) {
-      tab.addEventListener('click', function () {
-        const target = tab.getAttribute('data-service-target');
-        switchService(target, false);
-      });
-    });
-
     // Anchor links handling (#loans, #properties, #insurance) from navbar & mobile drawer
     const anchorLinks = document.querySelectorAll('a[href^="#loans"], a[href^="#properties"], a[href^="#insurance"], a[href*="#loans"], a[href*="#properties"], a[href*="#insurance"]');
     anchorLinks.forEach(function (link) {
@@ -804,30 +753,31 @@
         const href = link.getAttribute('href');
         const hashMatch = href.match(/#(loans|properties|insurance)/);
         if (hashMatch) {
-          e.preventDefault();
-          switchService(hashMatch[1], true);
+          const target = document.getElementById(hashMatch[1]);
+          if (target) {
+            e.preventDefault();
+            const navH = 74;
+            const targetPos = target.getBoundingClientRect().top + window.scrollY - navH - 24;
+            if (lenis) {
+              lenis.scrollTo(targetPos, { duration: 0.9 });
+            } else {
+              window.scrollTo({ top: targetPos, behavior: 'smooth' });
+            }
+          }
         }
       });
     });
 
-    // Handle initial hash on page load
-    if (window.location.hash) {
-      const initMatch = window.location.hash.match(/#(loans|properties|insurance)/);
-      if (initMatch) {
-        switchService(initMatch[1], false);
-      }
-    }
-
-    // Header & Section Entrance Reveal
+    // Clean Subtle Entrance Reveal
     if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
       gsap.registerPlugin(ScrollTrigger);
 
-      gsap.fromTo('.services-header-container',
-        { opacity: 0, y: 18 },
+      gsap.fromTo('.services-header',
+        { opacity: 0, y: 16 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.65,
+          duration: 0.55,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: servicesSection,
@@ -837,16 +787,17 @@
         }
       );
 
-      gsap.fromTo('.services-panels-wrap',
+      gsap.fromTo('.service-pillar',
         { opacity: 0, y: 22 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.7,
+          duration: 0.6,
+          stagger: 0.1,
           ease: 'power2.out',
           scrollTrigger: {
-            trigger: '.services-panels-wrap',
-            start: 'top 88%',
+            trigger: '.services-pillars-grid',
+            start: 'top 85%',
             once: true
           }
         }
