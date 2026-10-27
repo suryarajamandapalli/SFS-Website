@@ -672,10 +672,13 @@ button {
   }
   .journey-stage-pin {
     padding-top: 76px;
-    padding-bottom: 0.85rem;
+    padding-bottom: 1rem;
+    justify-content: space-between;
   }
   .journey-stage-container {
-    gap: 0.5rem;
+    height: 100%;
+    flex: 1;
+    justify-content: space-between;
   }
   .journey-header-block {
     margin-bottom: 0.4rem;
@@ -1489,10 +1492,10 @@ button {
   height: 100dvh;
   box-sizing: border-box;
   padding-top: calc(var(--nav-height) + 1.25rem);
-  padding-bottom: 1.5rem;
+  padding-bottom: 2rem;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   overflow: hidden;
   margin: 0;
@@ -1501,12 +1504,13 @@ button {
 .journey-stage-container {
   max-width: var(--sfs-container-max);
   width: 100%;
+  height: 100%;
+  flex: 1;
   margin: 0 auto;
   padding: 0 var(--sfs-container-gutter, 2rem);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  gap: clamp(0.5rem, 1.5vh, 1.25rem);
+  justify-content: space-between;
   box-sizing: border-box;
 }
 
@@ -1575,6 +1579,7 @@ button {
   gap: clamp(2.5rem, 5vw, 5rem);
   align-items: center;
   min-height: 0;
+  margin: clamp(0.75rem, 2vh, 1.5rem) 0;
   position: relative;
 }
 
@@ -1591,8 +1596,9 @@ button {
 .journey-screen-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10.5;
-  max-height: clamp(270px, 40vh, 440px);
+  height: 100%;
+  max-height: clamp(320px, 52vh, 520px);
+  aspect-ratio: unset;
   border-radius: 20px;
   overflow: hidden;
   background-color: #0A192F;
