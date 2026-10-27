@@ -460,6 +460,7 @@
         y: 22,
         skewY: 1.5,
         duration: 0.7,
+        immediateRender: false,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: partnersSection,
@@ -672,6 +673,7 @@
         y: 22,
         skewY: 1.5,
         duration: 0.7,
+        immediateRender: false,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: journeySection,
@@ -773,6 +775,7 @@
       y: 22,
       skewY: 1.5,
       duration: 0.7,
+      immediateRender: false,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: servicesSection,

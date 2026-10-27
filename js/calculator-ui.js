@@ -1,13 +1,9 @@
 /**
  * Shine Fin Services (SFS) — Gold Loan Calculator UI Controller
  * 
- * Features:
- *   - Mode 1: Weight of Ornament (Multi-ornament builder, Add/Remove, live recalculation)
- *   - Mode 2: Expected Loan Amount (Target amount, quick preset chips, required gold weight)
- *   - Chart.js Animated Doughnut (Eligible Loan Amount vs Remaining Gold Value)
- *   - Dynamic theme color synchronization via 'sfs:theme-changed'
- *   - Accessible ARIA attributes & keyboard navigation
- *   - GSAP entry reveals
+ * Strict separation of financial mathematical logic from UI rendering.
+ * Starts in a clean, professional empty state without premature mock calculations.
+ * Calculations run ONLY when valid user inputs are provided.
  */
 
 (function () {
@@ -30,13 +26,13 @@
 
   const Engine = window.SFSCalculatorEngine;
 
-  // State
+  // Clean initial state (empty weight, placeholder ornament, 22K default benchmark)
   let currentMode = 'weight'; // 'weight' | 'expected_loan'
   let ornamentList = [
-    { id: 'orn-1', type: 'necklace', weight: 2.0, carat: '22K' }
+    { id: 'orn-1', type: '', weight: null, carat: '22K' }
   ];
   let expectedLoanState = {
-    amount: 19605,
+    amount: null,
     carat: '22K'
   };
 
@@ -55,9 +51,12 @@
       row.className = 'ornament-item-row';
       row.setAttribute('data-id', orn.id);
 
-      const typeOptions = Config.ornamentTypes.map(function (t) {
-        return `<option value="${t.id}" ${t.id === orn.type ? 'selected' : ''}>${t.name}</option>`;
-      }).join('');
+      const typeOptions = `
+        <option value="" disabled ${!orn.type ? 'selected' : ''}>Select ornament</option>
+        ${Config.ornamentTypes.map(function (t) {
+          return `<option value="${t.id}" ${t.id === orn.type ? 'selected' : ''}>${t.name}</option>`;
+        }).join('')}
+      `;
 
       const caratOptions = Object.keys(Config.ratesPerGram).map(function (c) {
         return `<option value="${c}" ${c === orn.carat ? 'selected' : ''}>${c} (${Engine.formatCurrency(Config.ratesPerGram[c])}/g)</option>`;
@@ -65,10 +64,11 @@
 
       const canRemove = ornamentList.length > 1;
 
-      // Compute row value preview
+      // Compute row value preview if valid weight entered
+      const hasValidWeight = typeof orn.weight === 'number' && orn.weight > 0;
       const rate = Config.ratesPerGram[orn.carat] || 13070;
-      const rowVal = (orn.weight || 0) * rate;
-      const rowLoan = rowVal * (Config.loanToValuePercentage / 100);
+      const rowVal = hasValidWeight ? orn.weight * rate : 0;
+      const rowLoan = hasValidWeight ? rowVal * (Config.loanToValuePercentage / 100) : 0;
 
       row.innerHTML = `
         <div class="ornament-row-header">
@@ -96,7 +96,7 @@
             <label class="calc-field-label" for="weight-${orn.id}">Net Weight</label>
             <div class="calc-input-wrap">
               <input type="number" id="weight-${orn.id}" class="calc-input calc-input-with-suffix" 
-                     data-field="weight" value="${orn.weight > 0 ? orn.weight : ''}" placeholder="0.0" 
+                     data-field="weight" value="${hasValidWeight ? orn.weight : ''}" placeholder="e.g. 10.0" 
                      step="0.1" min="0.1" max="5000" aria-label="Net gold weight in grams">
               <span class="input-suffix-badge">g</span>
             </div>
@@ -113,11 +113,11 @@
         <div class="ornament-row-valuation">
           <div class="row-val-item">
             <span class="val-sublabel">Gold Valuation:</span>
-            <span class="val-num">${Engine.formatCurrency(rowVal)}</span>
+            <span class="val-num">${hasValidWeight ? Engine.formatCurrency(rowVal) : '—'}</span>
           </div>
           <div class="row-val-item">
             <span class="val-sublabel">Eligible Loan (75% LTV):</span>
-            <span class="val-num val-highlight">${Engine.formatCurrency(rowLoan)}</span>
+            <span class="val-num val-highlight">${hasValidWeight ? Engine.formatCurrency(rowLoan) : '—'}</span>
           </div>
         </div>
       `;
@@ -134,9 +134,10 @@
       });
 
       weightInput.addEventListener('input', function (e) {
-        const val = parseFloat(e.target.value);
-        orn.weight = (!isNaN(val) && val >= 0) ? val : 0;
-        recalculateAndRender(false); // Don't re-render input to avoid losing focus
+        const raw = e.target.value.trim();
+        const val = parseFloat(raw);
+        orn.weight = (raw !== '' && !isNaN(val) && val > 0) ? val : null;
+        recalculateAndRender(false);
         updateRowValuation(row, orn);
       });
 
@@ -159,17 +160,19 @@
   function updateRowValuation(rowEl, orn) {
     const valEl = rowEl.querySelector('.ornament-row-valuation');
     if (!valEl) return;
+    const hasValidWeight = typeof orn.weight === 'number' && orn.weight > 0;
     const rate = Config.ratesPerGram[orn.carat] || 13070;
-    const rowVal = (orn.weight || 0) * rate;
-    const rowLoan = rowVal * (Config.loanToValuePercentage / 100);
+    const rowVal = hasValidWeight ? orn.weight * rate : 0;
+    const rowLoan = hasValidWeight ? rowVal * (Config.loanToValuePercentage / 100) : 0;
+
     valEl.innerHTML = `
       <div class="row-val-item">
         <span class="val-sublabel">Gold Valuation:</span>
-        <span class="val-num">${Engine.formatCurrency(rowVal)}</span>
+        <span class="val-num">${hasValidWeight ? Engine.formatCurrency(rowVal) : '—'}</span>
       </div>
       <div class="row-val-item">
         <span class="val-sublabel">Eligible Loan (75% LTV):</span>
-        <span class="val-num val-highlight">${Engine.formatCurrency(rowLoan)}</span>
+        <span class="val-num val-highlight">${hasValidWeight ? Engine.formatCurrency(rowLoan) : '—'}</span>
       </div>
     `;
   }
@@ -178,14 +181,13 @@
     const newId = 'orn-' + (Date.now().toString(36) + Math.random().toString(36).substr(2, 4));
     ornamentList.push({
       id: newId,
-      type: 'bangles',
-      weight: 0,
+      type: '',
+      weight: null,
       carat: '22K'
     });
     renderOrnamentList();
     recalculateAndRender();
 
-    // Smooth focus on the new row's weight input
     setTimeout(function () {
       const input = document.getElementById(`weight-${newId}`);
       if (input) input.focus();
@@ -208,9 +210,9 @@
 
     if (input) {
       input.addEventListener('input', function (e) {
-        const val = Engine.parseAmount(e.target.value);
-        expectedLoanState.amount = val;
-        // Deselect chips if custom value
+        const raw = e.target.value.trim();
+        const val = Engine.parseAmount(raw);
+        expectedLoanState.amount = (raw !== '' && val > 0) ? val : null;
         chips.forEach(function (c) {
           const chipVal = parseFloat(c.getAttribute('data-amount'));
           c.classList.toggle('is-active', chipVal === val);
@@ -238,7 +240,7 @@
     });
   }
 
-  // --- 3. Mode Switcher (Tabs) ---
+  // --- 3. Mode Switcher (Tabs) & Load Example Action ---
 
   function setupModeSwitcher() {
     const modeTabs = document.querySelectorAll('.mode-tab-btn');
@@ -270,6 +272,25 @@
         recalculateAndRender();
       });
     });
+
+    // Deliberate "Load Example" Button
+    const loadExampleBtn = document.getElementById('btn-load-example');
+    if (loadExampleBtn) {
+      loadExampleBtn.addEventListener('click', function () {
+        if (currentMode === 'weight') {
+          ornamentList = [
+            { id: 'orn-1', type: 'necklace', weight: 2.0, carat: '22K' }
+          ];
+          renderOrnamentList();
+          recalculateAndRender();
+        } else {
+          expectedLoanState = { amount: 19605, carat: '22K' };
+          const input = document.getElementById('target-loan-input');
+          if (input) input.value = '19605';
+          recalculateAndRender();
+        }
+      });
+    }
   }
 
   // --- 4. Main Recalculate & UI Update Engine ---
@@ -280,13 +301,16 @@
     if (currentMode === 'weight') {
       result = Engine.calculateByOrnaments(ornamentList, Config.ratesPerGram, Config.loanToValuePercentage);
     } else {
-      result = Engine.calculateByTargetLoan(expectedLoanState.amount, expectedLoanState.carat, Config.ratesPerGram, Config.loanToValuePercentage);
+      const amt = expectedLoanState.amount || 0;
+      result = Engine.calculateByTargetLoan(amt, expectedLoanState.carat, Config.ratesPerGram, Config.loanToValuePercentage);
     }
 
-    // Update Summary Header / Primary Callout
+    const heroEmptyState = document.getElementById('hero-empty-state');
+    const heroActiveState = document.getElementById('hero-active-state');
     const primaryAmountEl = document.getElementById('summary-eligible-amount');
     const chartCenterValEl = document.getElementById('chart-center-val');
     const chartCenterSubEl = document.getElementById('chart-center-sub');
+    const eligibleLedgerEl = document.getElementById('summary-eligible-ledger');
     const totalGoldValEl = document.getElementById('summary-total-gold-value');
     const totalWeightEl = document.getElementById('summary-total-weight');
     const ornamentCountEl = document.getElementById('summary-ornament-count');
@@ -297,62 +321,88 @@
     const requiredWeightBanner = document.getElementById('mode2-required-weight-banner');
     const requiredWeightVal = document.getElementById('mode2-required-weight-val');
 
-    if (primaryAmountEl) {
-      primaryAmountEl.textContent = result.isValid ? result.formattedTotalEligibleLoan : '₹0';
-    }
+    const isValid = Boolean(result && result.isValid);
 
-    if (chartCenterValEl) {
-      chartCenterValEl.textContent = result.isValid ? result.formattedTotalEligibleLoan : '₹0';
-    }
+    if (isValid) {
+      // 1. Show active calculated state
+      if (heroEmptyState) heroEmptyState.style.display = 'none';
+      if (heroActiveState) heroActiveState.style.display = 'block';
 
-    if (chartCenterSubEl) {
-      chartCenterSubEl.textContent = currentMode === 'weight' ? 'Eligible Loan' : 'Target Loan';
-    }
+      if (primaryAmountEl) primaryAmountEl.textContent = result.formattedTotalEligibleLoan;
+      if (eligibleLedgerEl) eligibleLedgerEl.textContent = result.formattedTotalEligibleLoan;
+      if (chartCenterValEl) chartCenterValEl.textContent = result.formattedTotalEligibleLoan;
+      if (chartCenterSubEl) chartCenterSubEl.textContent = currentMode === 'weight' ? 'Eligible Loan' : 'Target Loan';
 
-    if (totalGoldValEl) totalGoldValEl.textContent = result.formattedTotalGoldValue;
-    if (ltvPercentEl) ltvPercentEl.textContent = result.ltvPercentage + '%';
-    if (notCoveredEl) notCoveredEl.textContent = result.formattedValueNotCovered;
+      if (totalGoldValEl) totalGoldValEl.textContent = result.formattedTotalGoldValue;
+      if (ltvPercentEl) ltvPercentEl.textContent = result.ltvPercentage + '%';
+      if (notCoveredEl) notCoveredEl.textContent = result.formattedValueNotCovered;
 
-    if (currentMode === 'weight') {
-      if (totalWeightEl) totalWeightEl.textContent = result.formattedTotalWeight;
-      if (ornamentCountEl) ornamentCountEl.textContent = result.ornamentCount + ' Item' + (result.ornamentCount === 1 ? '' : 's');
-      
-      // Determine dominant or combined purity
-      const carats = Object.keys(result.purityBreakdown);
-      if (purityValEl) {
-        if (carats.length === 1) {
-          purityValEl.textContent = carats[0] + ' Hallmark';
-        } else if (carats.length > 1) {
-          purityValEl.textContent = 'Mixed (' + carats.join(', ') + ')';
-        } else {
-          purityValEl.textContent = '22K (Standard)';
+      if (currentMode === 'weight') {
+        if (totalWeightEl) totalWeightEl.textContent = result.formattedTotalWeight;
+        if (ornamentCountEl) ornamentCountEl.textContent = result.ornamentCount + ' Item' + (result.ornamentCount === 1 ? '' : 's');
+        
+        const carats = Object.keys(result.purityBreakdown);
+        if (purityValEl) {
+          if (carats.length === 1) {
+            purityValEl.textContent = carats[0] + ' Hallmark';
+          } else if (carats.length > 1) {
+            purityValEl.textContent = 'Mixed (' + carats.join(', ') + ')';
+          } else {
+            purityValEl.textContent = '22K (Standard)';
+          }
+        }
+
+        if (ratePerGramEl) {
+          if (carats.length === 1 && Config.ratesPerGram[carats[0]]) {
+            ratePerGramEl.textContent = Engine.formatCurrency(Config.ratesPerGram[carats[0]]) + '/g';
+          } else {
+            ratePerGramEl.textContent = Engine.formatCurrency(Config.ratesPerGram['22K']) + '/g (22K Baseline)';
+          }
+        }
+      } else {
+        // Mode 2 Active
+        if (totalWeightEl) totalWeightEl.textContent = result.formattedRequiredWeight;
+        if (ornamentCountEl) ornamentCountEl.textContent = 'Calculated Target';
+        if (purityValEl) purityValEl.textContent = result.carat + ' Hallmark';
+        if (ratePerGramEl) ratePerGramEl.textContent = result.formattedRatePerGram + '/g';
+
+        if (requiredWeightVal) requiredWeightVal.textContent = result.formattedRequiredWeight;
+        if (requiredWeightBanner) {
+          const contextEl = requiredWeightBanner.querySelector('.mode2-weight-context');
+          if (contextEl) contextEl.textContent = 'Under 75% LTV assumption';
         }
       }
 
-      if (ratePerGramEl) {
-        if (carats.length === 1 && Config.ratesPerGram[carats[0]]) {
-          ratePerGramEl.textContent = Engine.formatCurrency(Config.ratesPerGram[carats[0]]) + '/g';
-        } else {
-          ratePerGramEl.textContent = Engine.formatCurrency(Config.ratesPerGram['22K']) + '/g (22K Baseline)';
-        }
-      }
+      // Update Chart.js Doughnut with active calculation
+      updateChart(result.totalEligibleLoan, result.valueNotCovered, true);
+
     } else {
-      // Mode 2
-      if (totalWeightEl) totalWeightEl.textContent = result.formattedRequiredWeight;
-      if (ornamentCountEl) ornamentCountEl.textContent = 'Calculated Target';
-      if (purityValEl) purityValEl.textContent = result.carat + ' Hallmark';
-      if (ratePerGramEl) ratePerGramEl.textContent = result.formattedRatePerGram + '/g';
+      // 2. Clean Empty State (Waiting for user input)
+      if (heroEmptyState) heroEmptyState.style.display = 'block';
+      if (heroActiveState) heroActiveState.style.display = 'none';
 
-      if (requiredWeightVal) {
-        requiredWeightVal.textContent = result.formattedRequiredWeight;
-      }
+      if (primaryAmountEl) primaryAmountEl.textContent = '—';
+      if (eligibleLedgerEl) eligibleLedgerEl.textContent = '—';
+      if (chartCenterValEl) chartCenterValEl.textContent = '—';
+      if (chartCenterSubEl) chartCenterSubEl.textContent = 'Awaiting Input';
+
+      if (totalGoldValEl) totalGoldValEl.textContent = '—';
+      if (ltvPercentEl) ltvPercentEl.textContent = Config.loanToValuePercentage + '%';
+      if (notCoveredEl) notCoveredEl.textContent = '—';
+      if (totalWeightEl) totalWeightEl.textContent = '—';
+      if (ornamentCountEl) ornamentCountEl.textContent = '0 Items';
+      if (ratePerGramEl) ratePerGramEl.textContent = Engine.formatCurrency(Config.ratesPerGram['22K']) + '/g (22K Sample Rate)';
+      if (purityValEl) purityValEl.textContent = '22K Benchmark';
+
+      if (requiredWeightVal) requiredWeightVal.textContent = '—';
       if (requiredWeightBanner) {
-        requiredWeightBanner.style.display = result.isValid ? 'block' : 'none';
+        const contextEl = requiredWeightBanner.querySelector('.mode2-weight-context');
+        if (contextEl) contextEl.textContent = 'Enter desired loan amount to calculate required gold';
       }
-    }
 
-    // Update Chart.js Doughnut
-    updateChart(result);
+      // Render Empty Muted Doughnut
+      updateChart(0, 1, false);
+    }
 
     if (shouldRerenderOrnaments === true) {
       renderOrnamentList();
@@ -361,15 +411,19 @@
 
   // --- 5. Chart.js Doughnut Visualization ---
 
-  function initOrUpdateChart() {
+  function initOrUpdateChart(loanVal, notCoveredVal, hasData) {
     const canvas = document.getElementById('sfs-gold-chart');
     if (!canvas || typeof Chart === 'undefined') return;
 
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
     const greenColor = isDark ? '#10B981' : '#006B32';
-    const neutralColor = isDark ? '#1C3A44' : '#D1D5DB';
+    const neutralColor = isDark ? '#1C3A44' : '#E2E8F0';
+    const emptyRingColor = isDark ? '#162D35' : '#E2E8F0';
     const borderBg = isDark ? '#10262D' : '#FFFFFF';
+
+    const chartData = hasData ? [loanVal, notCoveredVal] : [0, 1];
+    const chartBg = hasData ? [greenColor, neutralColor] : [emptyRingColor, emptyRingColor];
 
     if (!chartInstance) {
       const ctx = canvas.getContext('2d');
@@ -380,11 +434,11 @@
         data: {
           labels: ['Estimated Eligible Loan (75% LTV)', 'Remaining Gold Value (25%)'],
           datasets: [{
-            data: [19605, 6535],
-            backgroundColor: [greenColor, neutralColor],
+            data: chartData,
+            backgroundColor: chartBg,
             borderColor: borderBg,
             borderWidth: 3,
-            hoverOffset: 6
+            hoverOffset: hasData ? 6 : 0
           }]
         },
         options: {
@@ -392,7 +446,7 @@
           maintainAspectRatio: false,
           cutout: '76%',
           animation: prefersReducedMotion ? false : {
-            duration: 750,
+            duration: 650,
             easing: 'easeOutQuart'
           },
           plugins: {
@@ -400,6 +454,7 @@
               display: false
             },
             tooltip: {
+              enabled: Boolean(hasData),
               backgroundColor: isDark ? '#0B151F' : '#09192A',
               titleColor: '#FFFFFF',
               bodyColor: '#FFFFFF',
@@ -416,31 +471,18 @@
         }
       });
     } else {
-      // Update theme colors
-      chartInstance.data.datasets[0].backgroundColor = [greenColor, neutralColor];
+      chartInstance.data.datasets[0].data = chartData;
+      chartInstance.data.datasets[0].backgroundColor = chartBg;
       chartInstance.data.datasets[0].borderColor = borderBg;
+      chartInstance.data.datasets[0].hoverOffset = hasData ? 6 : 0;
+      chartInstance.options.plugins.tooltip.enabled = Boolean(hasData);
       chartInstance.options.plugins.tooltip.backgroundColor = isDark ? '#0B151F' : '#09192A';
       chartInstance.update();
     }
   }
 
-  function updateChart(result) {
-    if (!chartInstance) {
-      initOrUpdateChart();
-    }
-    if (!chartInstance) return;
-
-    const loanVal = result.isValid ? result.totalEligibleLoan : 0;
-    const notCoveredVal = result.isValid ? result.valueNotCovered : 1;
-
-    // Avoid empty zero-zero chart bug
-    if (loanVal === 0 && notCoveredVal === 0) {
-      chartInstance.data.datasets[0].data = [0, 1];
-    } else {
-      chartInstance.data.datasets[0].data = [loanVal, notCoveredVal];
-    }
-
-    chartInstance.update();
+  function updateChart(loanVal, notCoveredVal, hasData) {
+    initOrUpdateChart(loanVal, notCoveredVal, hasData);
   }
 
   // --- 6. Entrance Animations (GSAP) ---
@@ -450,38 +492,26 @@
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
-    const tl = gsap.timeline();
-
-    tl.from('.calc-header-block', {
+    gsap.from('.calc-intro-header', {
       opacity: 0,
       y: 20,
-      duration: 0.7,
+      duration: 0.65,
       ease: 'power3.out'
-    })
-    .from('.calc-mode-switcher-wrap', {
+    });
+
+    gsap.from('.calc-workspace-card', {
       opacity: 0,
-      y: 15,
-      duration: 0.5,
-      ease: 'power2.out'
-    }, '-=0.35')
-    .from('.calc-card', {
-      opacity: 0,
-      y: 25,
-      duration: 0.7,
+      y: 28,
+      duration: 0.75,
+      delay: 0.15,
       ease: 'power3.out'
-    }, '-=0.25')
-    .from('.summary-card', {
-      opacity: 0,
-      y: 30,
-      duration: 0.8,
-      ease: 'power3.out'
-    }, '-=0.45');
+    });
   }
 
   // --- 7. Lifecycle Initialization ---
 
   function init() {
-    // 1. Initial Mode 1 Render
+    // 1. Render Initial Mode 1 (Clean empty state)
     renderOrnamentList();
 
     // 2. Setup Add Ornament Button
@@ -493,22 +523,18 @@
     // 3. Setup Mode 2 Handlers
     setupExpectedLoanHandlers();
 
-    // 4. Setup Mode Switcher
+    // 4. Setup Mode Switcher & Example Loader
     setupModeSwitcher();
 
-    // 5. Initialize Chart
-    initOrUpdateChart();
-
-    // 6. Perform initial calculation (demonstration sample values: 2g @ 22K = ₹19,605)
+    // 5. Initialize UI in intentional clean empty state (no mock calculated values)
     recalculateAndRender();
 
-    // 7. Theme change listener
+    // 6. Theme change listener
     window.addEventListener('sfs:theme-changed', function () {
-      initOrUpdateChart();
       recalculateAndRender();
     });
 
-    // 8. Run subtle entrance reveal
+    // 7. Run subtle entrance reveal
     runCalculatorEntrance();
   }
 

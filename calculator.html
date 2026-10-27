@@ -231,7 +231,7 @@
         <div class="calc-rate-discreet-bar">
           <div class="rate-status-indicator">
             <span class="rate-status-dot"></span>
-            <span class="rate-status-tag">Demonstration Rate</span>
+            <span class="rate-status-tag">Sample Rate</span>
           </div>
           <div class="rate-status-meta">
             22K @ &#8377;13,070/g &bull; 75% LTV Benchmark
@@ -245,15 +245,21 @@
         <!-- Left Column: Gold Details Input Workspace -->
         <div class="calc-workspace-left">
           
-          <!-- Mode Switcher: Understated Editorial Segmented Control -->
-          <div class="calc-mode-bar" role="tablist" aria-label="Calculation Mode">
-            <button type="button" class="mode-tab-btn is-active" data-mode="weight" role="tab" aria-selected="true" aria-controls="panel-weight-mode">
-              <span class="mode-tab-title">Weight of Ornament</span>
-              <span class="mode-tab-sub">Know eligible loan amount</span>
-            </button>
-            <button type="button" class="mode-tab-btn" data-mode="expected_loan" role="tab" aria-selected="false" aria-controls="panel-expected-mode">
-              <span class="mode-tab-title">Expected Loan Amount</span>
-              <span class="mode-tab-sub">Know required weight &amp; purity</span>
+          <!-- Mode Switcher & Example Action Bar -->
+          <div class="calc-mode-bar-wrap">
+            <div class="calc-mode-bar" role="tablist" aria-label="Calculation Mode">
+              <button type="button" class="mode-tab-btn is-active" data-mode="weight" role="tab" aria-selected="true" aria-controls="panel-weight-mode">
+                <span class="mode-tab-title">Weight of Ornament</span>
+                <span class="mode-tab-sub">Know eligible loan amount</span>
+              </button>
+              <button type="button" class="mode-tab-btn" data-mode="expected_loan" role="tab" aria-selected="false" aria-controls="panel-expected-mode">
+                <span class="mode-tab-title">Expected Loan Amount</span>
+                <span class="mode-tab-sub">Know required weight &amp; purity</span>
+              </button>
+            </div>
+            <button type="button" id="btn-load-example" class="btn-load-example" aria-label="Load demonstration example calculation">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span>Load Example</span>
             </button>
           </div>
 
@@ -298,7 +304,7 @@
                 <div class="calc-input-wrap">
                   <span class="input-prefix-symbol">&#8377;</span>
                   <input type="number" id="target-loan-input" class="calc-input calc-input-with-prefix" 
-                         value="19605" placeholder="50,000" step="1000" min="5000" max="10000000" 
+                         value="" placeholder="e.g. 50,000" step="1000" min="1000" max="10000000" 
                          aria-label="Desired loan amount in rupees">
                 </div>
 
@@ -326,8 +332,8 @@
               <div id="mode2-required-weight-banner" class="mode2-result-strip">
                 <div class="mode2-result-label">Estimated Gold Weight Required</div>
                 <div class="mode2-result-val-row">
-                  <span id="mode2-required-weight-val" class="mode2-weight-num">2.00 g</span>
-                  <span class="mode2-weight-context">Under 75% LTV assumption</span>
+                  <span id="mode2-required-weight-val" class="mode2-weight-num">—</span>
+                  <span class="mode2-weight-context">Enter desired loan amount to calculate required gold</span>
                 </div>
               </div>
             </div>
@@ -340,13 +346,20 @@
           <div class="calc-summary-board">
             
             <!-- 1. The Strongest Visual Focal Point: Eligible Loan Hero -->
-            <div class="eligible-hero-block">
-              <span class="eligible-hero-label">Estimated Eligible Loan</span>
-              <div class="eligible-hero-amount" id="summary-eligible-amount">&#8377;19,605</div>
-              <div class="eligible-hero-meta">
-                <span>Calculated under <strong>75% LTV</strong> ceiling</span>
-                <span class="meta-separator">&bull;</span>
-                <span id="summary-purity-val">22K Hallmark</span>
+            <div class="eligible-hero-block" id="eligible-hero-block">
+              <div class="eligible-empty-state-wrap" id="hero-empty-state">
+                <span class="eligible-hero-label">Loan Eligibility Estimate</span>
+                <div class="empty-state-title">Your estimated loan amount will appear here.</div>
+                <div class="empty-state-subtitle">Enter your gold ornament net weight and purity to calculate instant loan eligibility under the 75% RBI LTV ceiling.</div>
+              </div>
+              <div class="eligible-active-state-wrap" id="hero-active-state" style="display: none;">
+                <span class="eligible-hero-label">Estimated Eligible Loan</span>
+                <div class="eligible-hero-amount" id="summary-eligible-amount">—</div>
+                <div class="eligible-hero-meta">
+                  <span>Calculated under <strong>75% LTV</strong> ceiling</span>
+                  <span class="meta-separator">&bull;</span>
+                  <span id="summary-purity-val">22K Hallmark</span>
+                </div>
               </div>
             </div>
 

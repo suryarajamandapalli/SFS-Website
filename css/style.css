@@ -4788,3 +4788,118 @@ body, .sfs-navbar, .sfs-partners, .sfs-about, .sfs-difference, .sfs-journey, .sf
 [data-theme="dark"] .bottom-card-text {
   color: #B8C7C2;
 }
+
+
+/* ==========================================================================
+   CRITICAL GLOBAL UI REPAIR ADDITIONS (P1, P2, P3, P4)
+   ========================================================================== */
+
+/* P3 — Theme Switching Transition (Color & Surface properties ONLY) */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background-color 220ms ease,
+              border-color 220ms ease,
+              color 220ms ease,
+              box-shadow 220ms ease,
+              stroke 220ms ease,
+              fill 220ms ease !important;
+  transition-delay: 0s !important;
+}
+
+/* P4 — Calculator Mode Bar Wrap & Load Example Action */
+.calc-mode-bar-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.calc-mode-bar-wrap .calc-mode-bar {
+  flex: 1 1 360px;
+}
+
+.btn-load-example {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.95rem;
+  background: var(--sfs-green-light);
+  border: 1px solid var(--sfs-green-border);
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--sfs-green);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.btn-load-example:hover {
+  background: var(--sfs-green);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 107, 50, 0.22);
+}
+
+.btn-load-example svg {
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .btn-load-example {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #10B981;
+}
+
+[data-theme="dark"] .btn-load-example:hover {
+  background: #10B981;
+  color: #07131A;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+}
+
+/* P4 — Calculator Hero Empty State */
+.eligible-empty-state-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.empty-state-title {
+  font-family: var(--font-heading, inherit);
+  font-size: clamp(1.22rem, 1.55vw, 1.42rem);
+  font-weight: 800;
+  color: var(--sfs-text-main);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0.15rem 0 0.25rem 0;
+}
+
+.empty-state-subtitle {
+  font-size: 0.84rem;
+  color: var(--sfs-text-muted);
+  line-height: 1.52;
+  margin: 0;
+}
+
+/* P1 & P2 — Unified Content Max-Width & Side Gutters */
+.nav-container,
+.calc-container,
+.diff-container,
+.partners-container,
+.about-container,
+.journey-stage-container,
+.services-header-container,
+.contact-container,
+.footer-container {
+  max-width: var(--sfs-container-max, 1240px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Ensure calculator page has top clearance for 74px navbar */
+.calc-page {
+  padding-top: calc(var(--nav-height, 74px) + 2.25rem);
+}

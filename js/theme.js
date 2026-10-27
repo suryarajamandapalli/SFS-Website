@@ -49,8 +49,15 @@
       localStorage.setItem(STORAGE_KEY, mode);
     } catch (e) {}
 
+    // Apply restrained color-only transition
+    document.documentElement.classList.add('theme-transitioning');
+
     document.documentElement.setAttribute('data-theme', currentTheme);
     document.documentElement.setAttribute('data-theme-mode', mode);
+
+    setTimeout(function () {
+      document.documentElement.classList.remove('theme-transitioning');
+    }, 240);
 
     // Update UI toggle icons & active badges
     updateThemeUI(mode, currentTheme);
