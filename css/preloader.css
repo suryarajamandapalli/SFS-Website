@@ -2,9 +2,6 @@
    SFS CINEMATIC PRELOADER
    Brand: Shine Fin Services
    Official SFS Green: #006B32 | Accent: #10B981
-   Aesthetic: Private Banking Brand Opening, Clean Canvas,
-              Optical Focus Convergence, Luminous Emerald Ambient Aura,
-              Masked Typography Reveal, and Theater Curtain Transition.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -18,7 +15,7 @@
   --sfs-font-primary: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --sfs-z-preloader: 99999;
 
-  /* Theme-aware preloader colors (Default Light) */
+  /* Light Theme Preloader Tokens */
   --sfs-preloader-bg: #FAF9F6;
   --sfs-preloader-bg-grad: radial-gradient(circle at 50% 46%, #FFFFFF 0%, #FAF9F6 60%, #EFECE5 100%);
   --sfs-preloader-ambient-grad: radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.95) 0%, rgba(250, 249, 246, 0.75) 55%, rgba(235, 233, 226, 0.35) 100%);
@@ -29,7 +26,7 @@
   --sfs-preloader-letters: #006B32;
 }
 
-/* Dark Theme Preloader Tokens (Instant sync with [data-theme="dark"]) */
+/* Dark Theme Preloader Tokens (Activated when data-theme="dark") */
 [data-theme="dark"] {
   --sfs-preloader-bg: #07131A;
   --sfs-preloader-bg-grad: radial-gradient(circle at 50% 46%, #0C2028 0%, #07131A 65%, #030A0E 100%);
@@ -72,11 +69,10 @@ body.preload-active {
   overflow: hidden;
   user-select: none;
   -webkit-user-select: none;
-  cursor: default;
+  cursor: pointer; /* Clicking anywhere allows immediate dismiss */
   will-change: transform;
 }
 
-/* Architectural ambient layer with soft diffusion */
 .sfs-preloader-ambient {
   position: absolute;
   inset: 0;
@@ -84,11 +80,7 @@ body.preload-active {
   pointer-events: none;
 }
 
-/* --------------------------------------------------------------------------
-   3. Center Stage — INITIAL HIDDEN STATE (Zero FOUC)
-   The screen starts completely clean (white or dark according to theme).
-   Elements only become visible when animated by GSAP.
-   -------------------------------------------------------------------------- */
+/* Center Presentation Stage — Starts completely hidden */
 .sfs-preloader-stage {
   position: relative;
   z-index: 2;
@@ -97,11 +89,12 @@ body.preload-active {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: clamp(1.2rem, 3vh, 2.5rem) clamp(1.2rem, 4vw, 2.5rem);
-  max-width: 92vw;
+  padding: clamp(1rem, 2.5vh, 2rem) clamp(1rem, 3vw, 2rem);
+  max-width: 90vw;
   opacity: 0;
   visibility: hidden;
   will-change: transform, opacity, filter;
+  pointer-events: none;
 }
 
 .sfs-preloader-stage.sfs-stage-ready {
@@ -109,27 +102,26 @@ body.preload-active {
   visibility: visible;
 }
 
-/* Emblem Wrap & Light Treatment */
+/* Emblem Wrap */
 .sfs-emblem-wrap {
   position: relative;
-  width: clamp(140px, 17vw, 240px);
-  height: clamp(140px, 17vw, 240px);
+  width: clamp(120px, 16vw, 200px);
+  height: clamp(120px, 16vw, 200px);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: clamp(1.4rem, 2.8vh, 2.4rem);
+  margin-bottom: clamp(1.2rem, 2.2vh, 1.8rem);
 }
 
-/* Luminous Emerald Aura (Private Banking Warmth) */
 .sfs-emblem-aura {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: clamp(220px, 26vw, 360px);
-  height: clamp(220px, 26vw, 360px);
+  width: clamp(180px, 24vw, 320px);
+  height: clamp(180px, 24vw, 320px);
   transform: translate(-50%, -50%) scale(0.8);
-  background: radial-gradient(circle, var(--sfs-preloader-aura) 0%, rgba(0, 107, 50, 0.03) 55%, transparent 72%);
-  filter: blur(44px);
+  background: radial-gradient(circle, var(--sfs-preloader-aura) 0%, var(--sfs-green-glow-outer) 55%, transparent 72%);
+  filter: blur(40px);
   border-radius: 50%;
   pointer-events: none;
   opacity: 0;
@@ -137,7 +129,6 @@ body.preload-active {
   will-change: opacity, transform;
 }
 
-/* Official SVG Emblem */
 .sfs-logo {
   position: relative;
   z-index: 2;
@@ -145,12 +136,11 @@ body.preload-active {
   height: 100%;
   display: block;
   overflow: visible;
-  opacity: 0;
-  filter: drop-shadow(0 10px 28px rgba(0, 107, 50, 0.12));
+  filter: drop-shadow(0 8px 24px rgba(0, 107, 50, 0.12));
 }
 
 [data-theme="dark"] .sfs-logo {
-  filter: drop-shadow(0 10px 28px rgba(16, 185, 129, 0.20));
+  filter: drop-shadow(0 8px 24px rgba(16, 185, 129, 0.20));
 }
 
 /* SVG Path Components — Initially Hidden */
@@ -171,150 +161,87 @@ body.preload-active {
 }
 
 /* --------------------------------------------------------------------------
-   4. High-Trust Financial Typography Lockup — Initially Hidden
+   3. Financial Typography Lockup — ZERO MASK OVERFLOW CLIPPING
+   Never use overflow:hidden with transform offsets that can slice letterforms!
    -------------------------------------------------------------------------- */
 .sfs-text-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(0.45rem, 1vh, 0.75rem);
+  gap: 0.5rem;
   width: 100%;
+  overflow: visible;
 }
 
-/* Mask wrappers to support editorial curtain reveals */
 .sfs-title-mask {
-  overflow: hidden;
-  padding: 0.1rem 0.5rem;
   display: block;
+  overflow: visible;
+  padding: 0;
 }
 
 .sfs-brand-title {
   font-family: var(--sfs-font-primary);
-  font-size: clamp(1.4rem, 2.7vw, 2.5rem);
+  font-size: clamp(1.35rem, 2.6vw, 2.2rem);
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   color: var(--sfs-preloader-title);
   text-transform: uppercase;
-  line-height: 1.15;
+  line-height: 1.25;
   white-space: nowrap;
   display: block;
   opacity: 0;
-  transform: translateY(115%);
-  will-change: transform, opacity, filter, letter-spacing;
+  margin: 0;
+  padding: 0;
+  will-change: opacity, transform;
 }
 
 .sfs-tagline-mask {
-  overflow: hidden;
-  padding: 0.1rem 0.5rem;
   display: block;
+  overflow: visible;
+  padding: 0;
 }
 
 .sfs-brand-tagline {
   font-family: var(--sfs-font-primary);
-  font-size: clamp(0.72rem, 1.15vw, 1.12rem);
+  font-size: clamp(0.7rem, 1.1vw, 0.95rem);
   font-weight: 600;
-  letter-spacing: 0.30em;
+  letter-spacing: 0.25em;
   color: var(--sfs-preloader-sub);
   text-transform: uppercase;
-  line-height: 1.35;
+  line-height: 1.4;
   white-space: nowrap;
   display: block;
   opacity: 0;
-  transform: translateY(115%);
-  will-change: transform, opacity, filter, letter-spacing;
+  margin: 0;
+  padding: 0;
+  will-change: opacity, transform;
 }
 
 /* --------------------------------------------------------------------------
-   5. Responsive Viewport Adaptations
+   4. Responsive Adjustments
    -------------------------------------------------------------------------- */
-/* Tablet (641px - 1024px) */
-@media (min-width: 641px) and (max-width: 1024px) {
-  .sfs-emblem-wrap {
-    width: clamp(160px, 19vw, 200px);
-    height: clamp(160px, 19vw, 200px);
-    margin-bottom: 1.8rem;
-  }
-
-  .sfs-brand-title {
-    font-size: clamp(1.6rem, 2.8vw, 2.05rem);
-    letter-spacing: 0.16em;
-  }
-
-  .sfs-brand-tagline {
-    font-size: clamp(0.8rem, 1.3vw, 0.95rem);
-    letter-spacing: 0.26em;
-  }
-}
-
-/* Mobile (<= 640px) */
 @media (max-width: 640px) {
-  .sfs-preloader-stage {
-    padding: 1.5rem 1rem;
-    max-width: 95vw;
-  }
-
   .sfs-emblem-wrap {
-    width: clamp(120px, 32vw, 155px);
-    height: clamp(120px, 32vw, 155px);
-    margin-bottom: 1.25rem;
-  }
-
-  .sfs-emblem-aura {
-    width: clamp(170px, 44vw, 230px);
-    height: clamp(170px, 44vw, 230px);
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1.15rem;
   }
 
   .sfs-brand-title {
-    font-size: clamp(1.15rem, 5.2vw, 1.45rem);
+    font-size: 1.15rem;
     letter-spacing: 0.12em;
   }
 
   .sfs-brand-tagline {
-    font-size: clamp(0.64rem, 2.7vw, 0.78rem);
+    font-size: 0.62rem;
     letter-spacing: 0.18em;
   }
 }
 
-/* Small mobile (<= 360px) */
-@media (max-width: 360px) {
-  .sfs-emblem-wrap {
-    width: 110px;
-    height: 110px;
-    margin-bottom: 1rem;
-  }
-
-  .sfs-brand-title {
-    font-size: 1.05rem;
-    letter-spacing: 0.10em;
-  }
-
-  .sfs-brand-tagline {
-    font-size: 0.58rem;
-    letter-spacing: 0.15em;
-  }
-}
-
-/* --------------------------------------------------------------------------
-   6. Accessibility (prefers-reduced-motion)
-   -------------------------------------------------------------------------- */
+/* Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
-  .sfs-preloader-stage {
-    opacity: 1 !important;
-    visibility: visible !important;
-  }
-
-  .sfs-logo,
-  .sfs-geom-path,
-  .sfs-letter-path,
-  .sfs-brand-title,
-  .sfs-brand-tagline {
-    opacity: 1 !important;
-    transform: none !important;
-    visibility: visible !important;
-    transition: none !important;
-    animation: none !important;
-    filter: none !important;
-    will-change: auto !important;
+  .sfs-preloader {
+    display: none !important;
   }
 }
