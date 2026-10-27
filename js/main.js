@@ -35,13 +35,14 @@
     if (typeof Lenis !== 'undefined') {
       try {
         lenis = new Lenis({
-          duration: 1.25,
+          duration: 1.15,
           easing: function (t) {
             return Math.min(1, 1.001 - Math.pow(2, -10 * t));
           },
           smoothWheel: true,
+          smoothTouch: false,
           wheelMultiplier: 0.95,
-          touchMultiplier: 1.5
+          touchMultiplier: 1.0
         });
 
         window.__sfsLenis = lenis;
@@ -399,14 +400,14 @@
       const mm = gsap.matchMedia();
       mm.add('(min-width: 992px)', function () {
         gsap.to('.hero-content', {
-          yPercent: -12,
-          opacity: 0.5,
+          yPercent: -8,
+          opacity: 0.9,
           ease: 'none',
           scrollTrigger: {
             trigger: '#home',
             start: 'top top',
-            end: 'bottom 20%',
-            scrub: 0.6
+            end: 'bottom top',
+            scrub: 0.4
           }
         });
 
@@ -453,34 +454,38 @@
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion || typeof gsap === 'undefined') return;
 
-    // Entrance reveal on approach
+    // Entrance reveal on approach - fromTo for zero-flicker stability
     if (partnersSection && typeof ScrollTrigger !== 'undefined') {
-      gsap.from('.partners-header', {
-        opacity: 0,
-        y: 22,
-        skewY: 1.5,
-        duration: 0.7,
-        immediateRender: false,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: partnersSection,
-          start: 'top 85%',
-          once: true
+      gsap.fromTo('.partners-header',
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.65,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: partnersSection,
+            start: 'top 88%',
+            once: true
+          }
         }
-      });
+      );
 
-      gsap.from('.marquee-scroller-wrap', {
-        opacity: 0,
-        y: 16,
-        duration: 0.75,
-        ease: 'power2.out',
-        delay: 0.15,
-        scrollTrigger: {
-          trigger: partnersSection,
-          start: 'top 85%',
-          once: true
+      gsap.fromTo('.marquee-scroller-wrap',
+        { opacity: 0, y: 14 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.65,
+          ease: 'power2.out',
+          delay: 0.1,
+          scrollTrigger: {
+            trigger: partnersSection,
+            start: 'top 88%',
+            once: true
+          }
         }
-      });
+      );
     }
 
     // 1. Banking Marquee: Right to Left (0% -> -50%)
@@ -544,27 +549,24 @@
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const aboutTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: aboutSection,
-        start: 'top 85%',
-        once: true
-      }
-    });
-
-    aboutTl
-      .from('.about-label', { opacity: 0, y: 12, duration: 0.45, ease: 'power2.out', immediateRender: false })
-      .from('.about-title', {
-        opacity: 0,
-        y: 24,
-        duration: 0.75,
-        ease: 'power3.out',
-        immediateRender: false
-      }, '-=0.25')
-      .from('.about-desc', { opacity: 0, y: 16, duration: 0.6, ease: 'power2.out', immediateRender: false }, '-=0.45')
-      .from('.about-cta-group', { opacity: 0, y: 14, scale: 0.98, duration: 0.55, ease: 'power3.out', immediateRender: false }, '-=0.35')
-      .from('.about-img', { opacity: 0, scale: 1.06, duration: 0.95, ease: 'power3.out', immediateRender: false }, '-=0.55')
-      .from('.about-pillar', { opacity: 0, y: 20, duration: 0.55, stagger: 0.08, ease: 'power2.out', immediateRender: false }, '-=0.4');
+    const aboutElements = aboutSection.querySelectorAll('.about-label, .about-title, .about-desc, .about-cta-group, .about-img, .about-pillar');
+    if (aboutElements.length > 0) {
+      gsap.fromTo(aboutElements,
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.05,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: aboutSection,
+            start: 'top 88%',
+            once: true
+          }
+        }
+      );
+    }
 
     // Subtle scroll parallax on image (Desktop)
     const mm = gsap.matchMedia();
@@ -597,40 +599,24 @@
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const diffTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: diffSection,
-        start: 'top 85%',
-        once: true
-      }
-    });
-
-    diffTl
-      .from('.diff-eyebrow', { opacity: 0, y: 10, duration: 0.45, ease: 'power2.out', immediateRender: false })
-      .from('.diff-title', {
-        opacity: 0,
-        y: 22,
-        duration: 0.75,
-        ease: 'power3.out',
-        immediateRender: false
-      }, '-=0.25')
-      .from('.diff-desc', { opacity: 0, y: 15, duration: 0.55, ease: 'power2.out', immediateRender: false }, '-=0.4')
-      .from('.diff-col-headers', { opacity: 0, y: 10, duration: 0.45, ease: 'power2.out', immediateRender: false }, '-=0.25')
-      .from('.diff-row', {
-        opacity: 0,
-        y: 14,
-        duration: 0.45,
-        stagger: 0.06,
-        ease: 'power2.out',
-        immediateRender: false
-      }, '-=0.2')
-      .from('.diff-statement', {
-        opacity: 0,
-        y: 18,
-        duration: 0.65,
-        ease: 'power2.out',
-        immediateRender: false
-      }, '-=0.25');
+    const diffElements = diffSection.querySelectorAll('.diff-eyebrow, .diff-title, .diff-desc, .diff-col-headers, .diff-row, .diff-statement');
+    if (diffElements.length > 0) {
+      gsap.fromTo(diffElements,
+        { opacity: 0, y: 14 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.55,
+          stagger: 0.04,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: diffSection,
+            start: 'top 88%',
+            once: true
+          }
+        }
+      );
+    }
   }
 
   // --- 10. How It Works Section (Pinned 5-Scene Storytelling Journey) ---
@@ -668,19 +654,20 @@
 
       if (progressFill) gsap.set(progressFill, { scaleX: 0 });
 
-      gsap.from('.journey-header-block', {
-        opacity: 0,
-        y: 22,
-        skewY: 1.5,
-        duration: 0.7,
-        immediateRender: false,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: journeySection,
-          start: 'top 85%',
-          once: true
+      gsap.fromTo('.journey-header-block',
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: journeySection,
+            start: 'top 88%',
+            once: true
+          }
         }
-      });
+      );
 
       const scrollDistance = Math.min(Math.round(window.innerHeight * 1.35), 1200);
 
@@ -769,20 +756,21 @@
 
     if (!pinTrack || !stagePin || !trainTrack || carriages.length === 0) return;
 
-    // Header Entrance Reveal with subtle skew release
-    gsap.from('.services-top-header-wrap', {
-      opacity: 0,
-      y: 22,
-      skewY: 1.5,
-      duration: 0.7,
-      immediateRender: false,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: servicesSection,
-        start: 'top 85%',
-        once: true
+    // Header Entrance Reveal - stable fromTo
+    gsap.fromTo('.services-top-header-wrap',
+      { opacity: 0, y: 16 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: servicesSection,
+          start: 'top 88%',
+          once: true
+        }
       }
-    });
+    );
 
     const mm = gsap.matchMedia();
 
@@ -811,54 +799,20 @@
         const listItems = c.querySelectorAll('.carriage-list-item');
         const cImg = c.querySelector('.carriage-img');
 
-        // Carriage 0 is initially fully active; Carriages 1 & 2 enter smoothly
-        if (idx === 0) {
-          gsap.set([headline, ...listItems], { opacity: 1, y: 0, skewY: 0 });
-        } else {
-          if (headline) {
-            const stHead = gsap.from(headline, {
-              opacity: 0.4,
-              y: 16,
-              duration: 0.5,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: c,
-                containerAnimation: trainTween,
-                start: 'left 85%',
-                toggleActions: 'play none none reverse'
-              }
-            });
-            if (stHead.scrollTrigger) childTriggers.push(stHead.scrollTrigger);
-          }
-
-          if (listItems.length > 0) {
-            const stList = gsap.from(listItems, {
-              opacity: 0.4,
-              y: 10,
-              duration: 0.4,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: c,
-                containerAnimation: trainTween,
-                start: 'left 80%',
-                toggleActions: 'play none none reverse'
-              }
-            });
-            if (stList.scrollTrigger) childTriggers.push(stList.scrollTrigger);
-          }
-        }
+        // All carriage typography is rock-solid and clear with zero flickering
+        gsap.set([headline, ...listItems], { opacity: 1, y: 0, skewY: 0 });
 
         if (cImg) {
           const stImg = gsap.fromTo(cImg,
-            { scale: 1.05 },
+            { scale: 1.04 },
             {
               scale: 1.0,
-              duration: 1.4,
-              ease: 'power3.out',
+              duration: 1.0,
+              ease: 'power2.out',
               scrollTrigger: {
                 trigger: c,
                 containerAnimation: trainTween,
-                start: 'left 85%',
+                start: 'left 90%',
                 toggleActions: 'play none none reverse'
               }
             }
@@ -935,26 +889,24 @@
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReducedMotion) return;
 
-      const ctaTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ctaSection,
-          start: 'top 82%',
-          once: true
-        }
-      });
-
-      ctaTl
-        .from('.cta-label', { opacity: 0, y: 12, duration: 0.45, ease: 'power2.out', immediateRender: false })
-        .from('.cta-heading', {
-          opacity: 0,
-          y: 24,
-          duration: 0.75,
-          ease: 'power3.out',
-          immediateRender: false
-        }, '-=0.25')
-        .from('.cta-desc', { opacity: 0, y: 16, duration: 0.6, ease: 'power2.out', immediateRender: false }, '-=0.4')
-        .from('.btn-primary-cta', { opacity: 0, scale: 0.96, duration: 0.6, ease: 'power3.out', immediateRender: false }, '-=0.25')
-        .from('.cta-secondary-info', { opacity: 0, y: 14, duration: 0.55, ease: 'power2.out', immediateRender: false }, '-=0.2');
+      const ctaElements = ctaSection.querySelectorAll('.cta-label, .cta-heading, .cta-desc, .btn-primary-cta, .cta-secondary-info');
+      if (ctaElements.length > 0) {
+        gsap.fromTo(ctaElements,
+          { opacity: 0, y: 16 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.05,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: ctaSection,
+              start: 'top 88%',
+              once: true
+            }
+          }
+        );
+      }
 
       const mm = gsap.matchMedia();
       mm.add('(min-width: 992px)', function () {
@@ -988,17 +940,24 @@
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReducedMotion) return;
 
-      const footerTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: footer,
-          start: 'top 92%',
-          once: true
-        }
-      });
-
-      footerTl
-        .from('.footer-col', { opacity: 0.2, y: 10, duration: 0.4, stagger: 0.06, ease: 'power2.out', immediateRender: false })
-        .from('.footer-bottom', { opacity: 0.2, duration: 0.4, ease: 'power2.out', immediateRender: false }, '-=0.2');
+      const footerElements = footer.querySelectorAll('.footer-col, .footer-bottom');
+      if (footerElements.length > 0) {
+        gsap.fromTo(footerElements,
+          { opacity: 0, y: 12 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            stagger: 0.04,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: footer,
+              start: 'top 94%',
+              once: true
+            }
+          }
+        );
+      }
     }
   }
 
